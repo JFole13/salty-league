@@ -27,8 +27,12 @@
     margin: 1.5rem 0 2.5rem;
     width: 225px;
     height: 140px;
-    /* width: 300px;
-    height: 187px; */
+}
+
+.logo-alternative {
+    width: 200px;
+    height: 47px;
+    margin: 1rem;
 }
 
 .main-container {
@@ -58,8 +62,102 @@
     flex-direction: column;
 }
 
+.years-panel-responsive {
+    display: none;
+    background-color: rgb(33, 33, 33);
+    display: flex;
+    flex-direction: column;
+}
+
+.year-selector {
+    margin: 1rem;
+    background-color: rgb(52, 52, 52);
+    border: none;
+    height: 30px;
+    border-radius: 0;
+    font-size: 1.1rem;
+
+}
+
+.year-selector option {
+    background-color: rgb(52, 52, 52);
+}
+
 .year-titles {
     font-size: 1.2rem;
     margin: 0.5rem 0;
     cursor: pointer;
+}
+
+/*----------------------------------------------------- Mobile (Portrait) -----------------------------------------------------*/
+
+@media screen and (max-width: 425px) {
+    .activity-panel {
+        width: 100%;
+    }
+
+    .activity-title {
+        font-size: 1.4rem;
+        margin: 1rem;
+    }
+
+    .main-container {
+        flex-direction: column;
+    }
+
+    .rankings-panel {
+        width: 100%;
+        align-items: start;
+    }
+
+    .rankings-title {
+        margin: 1rem;
+    }
+
+    .years-panel {
+        display: none;
+    }
+
+    .years-panel-responsive {
+        display: flex;
+    }
+}
+
+/*----------------------------------------------------- Mobile (Landscape) -----------------------------------------------------*/
+
+
+@media screen and (min-width: 426px) and (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .years-panel {
+        width: 100%;
+    }
+
+    .activity-panel {
+        width: 100%;
+    }
+
+    .rankings-panel {
+        width: 100%;
+    }
+}
+
+/*----------------------------------------------------- Tablet (Portrait) -----------------------------------------------------*/
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+
+}
+
+/*----------------------------------------------------- Tablet (Landscape) -----------------------------------------------------*/
+
+@media screen and (min-width: 1025px) and (max-width: 1325px) {
+   
+}
+
+@media screen and (min-width: 1326px) {
+    .years-panel-responsive {
+        display: none;
+    }
 }
