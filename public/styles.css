@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Fugaz One', sans-serif;
+    color: rgb(235, 235, 235);
+
+}
+
+.activity-title {
+    font-size: 1.4rem;
+    margin: 1.5rem 2.5rem 0.75rem;
+}
+
+.activity-panel {
+    background-color: rgb(52, 52, 52);
+    width: 60%;
+}
+
+.league-title {
+    margin: 0 2.5rem;
+}
+
+.logo {
+    margin: 1.5rem 0 2.5rem;
+    width: 225px;
+    height: 140px;
+    /* width: 300px;
+    height: 187px; */
+}
+
+.main-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.rankings-panel {
+    background-color: rgb(33, 33, 33);
+    width: 20%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.rankings-title {
+    font-size: 1.4rem;
+    margin: 1.5rem 0;
+}
+
+.years-panel {
+    background-color: rgb(33, 33, 33);
+    width: 20%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.year-titles {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+}
