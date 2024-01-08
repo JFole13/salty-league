@@ -12,19 +12,36 @@
 .activity-title {
     font-size: 1.4rem;
     margin: 1.5rem 2.5rem 0.75rem;
+    display: inline-flex;
 }
 
 .activity-panel {
     background-color: rgb(52, 52, 52);
     width: 60%;
+    display: flex;
+    justify-content: space-between;
 }
 
+.hvr-fade {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    overflow: hidden;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-property: color, background-color;
+    transition-property: color, background-color;
+  }
+
 .league-title {
-    margin: 0 2.5rem;
+    margin: 1.5rem 4rem 0.75rem 0;
+    display: inline-flex;
 }
 
 .logo {
-    margin: 1.5rem 0 2.5rem;
+    margin: 1.5rem 0 2rem;
     width: 225px;
     height: 140px;
 }
@@ -52,6 +69,46 @@
 .rankings-title {
     font-size: 1.4rem;
     margin: 1.5rem 0;
+}
+
+.year1:hover, .year1:focus, .year1:active {
+    background-color: rgb(33, 33, 33);
+}
+
+.year2:hover, .year2:focus, .year2:active {
+    background-color: #551010;
+}
+
+.year3:hover, .year3:focus, .year3:active {
+    background-color: #0B1643;
+}
+
+.year4:hover, .year4:focus, .year4:active {
+    background-color: #15400C;
+}
+
+.year5:hover, .year5:focus, .year5:active {
+    background-color: #3E0D43;
+}
+
+.year6:hover, .year6:focus, .year6:active {
+    background-color: #484009;
+}
+
+.year7:hover, .year7:focus, .year7:active {
+    background-color: #0A4948;
+}
+
+.year8:hover, .year8:focus, .year8:active {
+    background-color: #441A0A;
+}
+
+.year9:hover, .year9:focus, .year9:active {
+    background-color: #240B3F;
+}
+
+.year10:hover, .year10:focus, .year10:active {
+    background-color: rgb(33, 33, 33);
 }
 
 .years-panel {
@@ -85,8 +142,10 @@
 
 .year-titles {
     font-size: 1.2rem;
-    margin: 0.5rem 0;
     cursor: pointer;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
 }
 
 /*----------------------------------------------------- Mobile (Portrait) -----------------------------------------------------*/
