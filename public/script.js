@@ -81,3 +81,34 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
     });
 };
 
+const fetchCurrentRankings = () => {
+    fetch('/rankings', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then (response => response.json())
+    .then (data => {
+        console.log(data);
+        populateCurrentRankings(data);
+    })
+    .catch (error => {
+        console.error('Error fetching rankings:' + error);
+    })
+}
+
+fetchCurrentRankings();
+
+const populateCurrentRankings = (data) => {
+    data = data.sort((a, b) => a.rank - b.rank);
+
+    const avatars = document.querySelectorAll('.avatar-img');
+
+    avatars.forEach((avatar, index) => {
+        if(data[index].avatar.includes('uploads')) {
+            avatar.src = data[index].avatar;
+        }
+    });
+
+}
