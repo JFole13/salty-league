@@ -12,15 +12,17 @@
 .activity-title {
     font-size: 1.5rem;
     font-weight: 300;
-    margin: 1.5rem 2.5rem 0.75rem;
-    display: inline-flex;
+    margin: 1rem 2.5rem 0.75rem;
+}
+
+.activity-titles-container {
+    display: flex;
+    justify-content: space-between;
 }
 
 .activity-panel {
     background-color: rgb(52, 52, 52);
     width: 60%;
-    display: flex;
-    justify-content: space-between;
 }
 
 .avatar-container {
@@ -31,30 +33,8 @@
 }
 
 .avatar-img {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-}
-
-.avatar-img-1 {
-    width: 50px;
-    height: 50px;
-}
-
-.avatar-img-2 {
-    width: 40px;
-    height: 40px;
-}
-
-.avatar-img-3 {
     width: 30px;
     height: 30px;
-}
-
-.circle {
-    width: 45px;
-    height: 45px;
-    background-color: rgb(235, 104, 89);
     border-radius: 50%;
 }
 
@@ -71,10 +51,31 @@
     transition-property: color, background-color;
 }
 
-.league-title {
-    margin: 1.5rem 4rem 0.75rem 0;
+.info-container {
+    margin: 1rem 2.5rem 0.75rem;
+}
+
+.league-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid rgb(33, 33, 33);
+    margin-left: 0.4rem;
+}
+
+.league-type-title {
+    margin: 1rem 2.5rem 0.75rem;
+    display: flex;
+    align-items: center;
     font-weight: 300;
-    display: inline-flex;
+    cursor: pointer;
+    border: 1px solid rgb(235, 235, 235);
+    border-radius: 10px;
+    padding: 6px;
+    color: rgb(33, 33, 33);
+    background-color: rgb(235, 235, 235);
+    vertical-align: middle;
+    font-size: 1.2rem;
 }
 
 .logo {
@@ -95,63 +96,29 @@
     height: 100vh;
 }
 
-.rank-first-place-avatar {
-    width: 50px;
-    height: 50px;
-    background-color: rgb(235, 104, 89);
-    border-radius: 50%;
-}
-
-.rank-first-place-name {
-    font-size: 1.5rem;
-}
-
-.rank-first-place-points {
-    font-size: 1.5rem;
-}
-
-.rank-second-place-avatar {
-    width: 40px;
-    height: 40px;
-    background-color: rgb(235, 104, 89);
-    border-radius: 50%;
-}
-
-.rank-second-place-name {
-    font-size: 1.3rem;
-}
-
-.rank-second-place-points {
-    font-size: 1.3rem;
-}
-
-.rank-third-place-avatar {
-    width: 30px;
-    height: 30px;
-    background-color: rgb(235, 104, 89);
-    border-radius: 50%;
-}
-
-.rank-third-place-name {
-    font-size: 1.1rem;
-}
-
-.rank-third-place-points {
-    font-size: 1.1rem;
-}
-
-.rank-remaining-place-avatar {
-    width: 25px;
-    height: 25px;
-    background-color: rgb(235, 104, 89);
-    border-radius: 50%;
-}
-
-.rank-remaining-place-name {
+.punishment-title {
     font-size: 1rem;
+    font-weight: 100;
+    cursor: pointer;
+    margin-top: 1rem;
+    border: 1px solid rgb(235, 235, 235);
+    border-radius: 10px;
+    padding: 6px;
+    color: rgb(33, 33, 33);
+    background-color: rgb(235, 235, 235);
 }
 
-.rank-remaining-place-points {
+.rank-name {
+    width: 50%;
+    padding-left: 5px;
+    font-weight: 100;
+    font-size: 1.1rem;
+}
+
+.rank-points {
+    width: 25%;
+    padding-left: 20px;
+    font-weight: 100;
     font-size: 1rem;
 }
 
@@ -159,20 +126,8 @@
     width: 100%;
     display: flex;
     align-items: center;
-    margin: 0.5rem 0;
+    margin: 0.4rem 0;
     justify-content: center;
-}
-
-.rank-name {
-    width: 50%;
-    padding-left: 5px;
-    font-weight: 100;
-}
-
-.rank-points {
-    width: 25%;
-    padding-left: 20px;
-    font-weight: 100;
 }
 
 .rankings-panel {
@@ -186,7 +141,7 @@
 .rankings-title {
     font-size: 1.6rem;
     font-weight: 300;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
 }
 
 .year1:hover, .year1:focus, .year1:active {

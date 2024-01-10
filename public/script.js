@@ -70,6 +70,8 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
     const yearsPanel = document.querySelector('.years-panel');
     const activityPanel = document.querySelector('.activity-panel');
     const rankingsPanel = document.querySelector('.rankings-panel');
+    const punishmentTitle = document.querySelector('.punishment-title');
+    const leagueTypeTitle = document.querySelector('.league-type-title');
     const everything = document.querySelectorAll('*');
 
     logo.src = url;
@@ -79,6 +81,9 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
     everything.forEach(function(thing) {
         thing.style.color = textColor;
     });
+    punishmentTitle.style.color = 'rgb(33, 33, 33)';
+    leagueTypeTitle.style.color = 'rgb(33, 33, 33)';
+
 };
 
 const fetchCurrentRankings = () => {
@@ -106,9 +111,24 @@ const populateCurrentRankings = (data) => {
     const avatars = document.querySelectorAll('.avatar-img');
 
     avatars.forEach((avatar, index) => {
+        // checking if it has the link to a picture or if it's just an avatar, just randomly chose upload 
+        // because it's in every link
         if(data[index].avatar.includes('uploads')) {
             avatar.src = data[index].avatar;
+        } else {
+            avatar.src = 'images/salty-logos/png/logo-small.png';
         }
     });
 
+    const names = document.querySelectorAll('.rank-name');
+
+    names.forEach((name, index) => {
+        name.innerHTML = data[index].team_name;
+    })
+
+    const points = document.querySelectorAll('.rank-points');
+
+    points.forEach((point, index) => {
+        point.innerHTML = data[index].total_points;
+    })
 }
