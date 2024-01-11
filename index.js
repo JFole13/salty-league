@@ -1,7 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import fetch from 'node-fetch';
 import pkg from 'pg'
+import schedule from 'node-schedule';
+import { updateScoring } from './scoring.js';
+
+
 
 const { Client } = pkg;
 
@@ -27,21 +30,6 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-let userData;
-
-// fetch(`https://api.sleeper.app/v1/league/995196431700942848/users`, {
-//     method: 'GET',
-//     headers: {
-//         'Content-Type': 'application/json'
-//     },
-// })
-// .then(response => response.json())
-// .then(data => {
-//     userData = data;
-// })
-// .catch(error => {
-//     console.error('Error getting users:', error);
-// })
 
 // app.put('/update/players', async (req, res) => {
 //     try {
@@ -90,3 +78,12 @@ app.listen(3000, '192.168.1.121', () => {
 // app.listen(port, () => {
 //     console.log(`Example app listening on port ${port}`)
 // })
+
+const rule = new schedule.RecurrenceRule();
+rule.dayOfWeek = 3;
+rule.hour = 20;
+rule.minute = 13;
+
+updateScoring();
+
+//const job = schedule.scheduleJob(rule, updateScoring);
