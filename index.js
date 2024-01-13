@@ -3,9 +3,6 @@ import bodyParser from 'body-parser';
 import pkg from 'pg'
 import schedule from 'node-schedule';
 import { updateScoring } from './scoring.js';
-
-
-
 const { Client } = pkg;
 
 const client = new Client({
@@ -21,34 +18,43 @@ client.connect()
 .catch(err => console.error('Error connecting to PostgreSQL', err));
 
 const app = express();
-
 app.use(express.static('public'));
-
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+app.post('/activity', async (req, res) => {
+    try {
+        const { message } = req.body;
 
-// app.put('/update/players', async (req, res) => {
-//     try {
-  
-//       const { id, title, image_url_1, image_url_2, collection_id } = req.body;
-  
-//       const query = `UPDATE carousel_links
-//                      SET title = $2, image_url_1 = $3, image_url_2 = $4, collection_id = $5 WHERE
-//                      id = $1`;
-  
-//       const values = [ id, title, image_url_1, image_url_2, collection_id];
-//       const result = await client.query(query, values);
-  
-//       res.json(result.rows);
-//     } catch (error) {
-//       console.log(error);
-//       res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// });
+        const query = `INSERT INTO activity (message) VALUES ($1)`;
+        const values = [message];
+        await client.query(query, values);
+        res.json({ message: 'New Activity Posted' });
+    } catch (error) {
+        console.error ('Error posting activity: ', error);
+    }
+})
+
+app.put('/update/points', async (req, res) => {
+    try {
+        const totalPoints = req.body;
+
+        for (let i = 0; i < totalPoints.length; i++) {
+            const query = 'UPDATE players SET total_points = total_points + $1 WHERE id = $2';
+            const values = [parseInt(totalPoints[i]), i + 1];
+            await client.query(query, values);
+        }
+
+        res.json({ message: 'Total points updated successfully' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 app.get('/rankings', async (req, res) => {
     try {
@@ -62,8 +68,6 @@ app.get('/rankings', async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-
-
 
 // let port = process.env.PORT;
 // if (port == null || port == "") {

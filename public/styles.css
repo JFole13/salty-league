@@ -265,7 +265,7 @@
     }
 
     .years-panel {
-        width: 100%;
+        display: none;
     }
 
     .activity-panel {
@@ -280,14 +280,21 @@
 /*----------------------------------------------------- Tablet (Portrait) -----------------------------------------------------*/
 
 @media screen and (min-width: 769px) and (max-width: 1024px) {
-
+    .years-panel {
+        display: none;
+    }
 }
 
 /*----------------------------------------------------- Tablet (Landscape) -----------------------------------------------------*/
 
 @media screen and (min-width: 1025px) and (max-width: 1325px) {
-   
+    .years-panel {
+        display: none;
+    }
 }
+
+/*----------------------------------------------------- Computer ---------------------------------------------------------------*/
+
 
 @media screen and (min-width: 1326px) {
     .years-panel-responsive {

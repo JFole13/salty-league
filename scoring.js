@@ -1,44 +1,64 @@
 import fetch from 'node-fetch';
 import fs from 'fs';
-import { match } from 'assert';
 
-// call this every tuesday at noon
-// matchup id, roster id and the points
-// compare them somehow
-
-// add salty points to winner 
-// i think i want to do a global array or something to store all points that are tallied up. so all scoring 
-// categories will be tallied up and then the first fetch promise will be finished, and then call another one
-// to update the players totalPoints in SQL
-
-// add to recent activity
-// save json at som point
+// Call stack basically looks like 
+// updateScoring()
+//      => fetch matchup data
+//          => saves json copy of the week
+//          => calls points category to add
+//               => posts activity message for category
+//          => fetch update to players total points
 
 
-// [[{roster_id: 1, points: 30}, {roster_id: 2, points: 40}],[]]
 
 // hard code roster_id = user_id ([1 : 898409328094803])
 
+const pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 export const updateScoring = () => {
 
     fetch(`https://api.sleeper.app/v1/league/995196431700942848/matchups/1`, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json'
-    },
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
     })
     .then(response => response.json())
     .then(data => {
+        exportData(data);
         addWinWeekPoints(data);
+        return fetch('http://192.168.1.121:3000/update/points', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pointsStorage)
+    })
+    .then (response => response.json())
     })
     .catch(error => {
-        console.error('Error getting users:', error);
+        console.error('Error getting matchups:', error);
     })
+}
+
+const exportData = (data) => {
+    try {
+        const jsonData = JSON.stringify(data, null, 2);
+        fs.writeFile('week1.json', jsonData, (err) => {
+            if (err) {
+                console.error('Error writing to file:', err);
+            } else {
+                console.log('Week Saved');
+            }
+        });
+    } catch (error) {
+        console.error('Error converting data to JSON:', error);
+    }
 }
 
 const addWinWeekPoints = (data) => {
     const matchups = [[],[],[],[],[]];
+    const points = 5;
 
     for (let i = 0; i < data.length; i++) {
         let matchupIndex = data[i].matchup_id - 1;
@@ -47,15 +67,35 @@ const addWinWeekPoints = (data) => {
 
     matchups.forEach(matchup => {
         const [team1, team2] = matchup;
-        console.log(`Team ${team1.roster_id} points: ${team1.points}`);
-        console.log(`Team ${team2.roster_id} points: ${team2.points}`);
-    
+        let message;
+        
         if (team1.points > team2.points) {
-          console.log(`Team ${team1.roster_id} has more points than Team ${team2.roster_id}`);
+            pointsStorage[team1.roster_id - 1] = 5;
+            pointsStorage[team2.roster_id - 1] = 0;
+            message = `Team ${team1.roster_id} won their week (+5)`;
+
         } else if (team1.points < team2.points) {
-          console.log(`Team ${team2.roster_id} has more points than Team ${team1.roster_id}`);
+            pointsStorage[team1.roster_id - 1] = 0;
+            pointsStorage[team2.roster_id - 1] = 5;
+            message = `Team ${team2.roster_id} won their week (+5)`;
+
         } else {
-          console.log(`Both teams have the same points`);
+          // figure out tie
         }
-      });
+
+        fetch('http://192.168.1.121:3000/activity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+        })
+        .catch(error => {
+            console.error('Error posting activity2: ', error);
+        })
+    });
 }

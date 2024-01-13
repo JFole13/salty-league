@@ -106,7 +106,7 @@ const fetchCurrentRankings = () => {
 fetchCurrentRankings();
 
 const populateCurrentRankings = (data) => {
-    data = data.sort((a, b) => a.rank - b.rank);
+    data = data.sort((a, b) => b.total_points - a.total_points);
 
     const avatars = document.querySelectorAll('.avatar-img');
 
