@@ -26,6 +26,18 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/activity', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM activity';
+
+        const result = await client.query(query);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error getting activity: ', error)
+    }
+});
+
 app.post('/activity', async (req, res) => {
     try {
         const { message } = req.body;
@@ -37,7 +49,7 @@ app.post('/activity', async (req, res) => {
     } catch (error) {
         console.error ('Error posting activity: ', error);
     }
-})
+});
 
 app.put('/update/points', async (req, res) => {
     try {

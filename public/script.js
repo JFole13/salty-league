@@ -132,3 +132,31 @@ const populateCurrentRankings = (data) => {
         point.innerHTML = data[index].total_points;
     })
 }
+
+const fetchActivity = () => {
+    fetch('/activity', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then (response => response.json())
+    .then (data => {
+        console.log(data);
+        populateActivity(data);
+    })
+    .catch (error => {
+        console.error('Error fetching rankings: ' + error);
+    })
+}
+
+fetchActivity();
+
+const populateActivity = (data) => {
+    const activityContainer = document.querySelector('.activity-container');
+    for (let i = 0; i < data.length; i++) {
+        let activityTag = document.createElement('p');
+        activityTag.innerHTML = data[i].message;
+        activityContainer.appendChild(activityTag);
+    }
+}
