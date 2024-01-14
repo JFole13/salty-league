@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import pkg from 'pg'
 import schedule from 'node-schedule';
-import { updateScoring } from './scoring.js';
+import { updatePlayers, updateScoring } from './scoring.js';
 const { Client } = pkg;
 
 const client = new Client({
@@ -38,14 +38,27 @@ app.get('/activity', async (req, res) => {
     }
 });
 
+app.get('/activity/:year', async (req, res) => {
+    try {
+        const year = req.params.year;
+        const query = `SELECT * FROM activity WHERE year = ${year}`;
+
+        const result = await client.query(query);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error getting activity: ', error)
+    }
+});
+
 app.post('/activity', async (req, res) => {
     try {
-        const { message } = req.body;
+        const { log, year } = req.body;
 
-        const query = `INSERT INTO activity (message) VALUES ($1)`;
-        const values = [message];
+        const query = `INSERT INTO activity (log, year) VALUES ($1, $2)`;
+        const values = [log, year];
         await client.query(query, values);
-        res.json({ message: 'New Activity Posted' });
+        res.json({ log: 'New Activity Posted' });
     } catch (error) {
         console.error ('Error posting activity: ', error);
     }
@@ -68,7 +81,7 @@ app.put('/update/points', async (req, res) => {
     }
 });
 
-app.get('/rankings', async (req, res) => {
+app.get('/players', async (req, res) => {
     try {
         const query = 'SELECT * FROM players';
 
@@ -100,6 +113,6 @@ rule.dayOfWeek = 3;
 rule.hour = 20;
 rule.minute = 13;
 
-updateScoring();
+updatePlayers();
 
 //const job = schedule.scheduleJob(rule, updateScoring);

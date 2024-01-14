@@ -1,3 +1,33 @@
+const fetchActivity = (year) => {
+    fetch(`/activity/${year}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then (response => response.json())
+    .then (data => {
+        console.log(data);
+        populateActivity(data);
+    })
+    .catch (error => {
+        console.error('Error fetching activity: ' + error);
+    })
+};
+
+const populateActivity = (data) => {
+    const activityContainer = document.querySelector('.activity-container');
+    activityContainer.innerHTML = '';
+    for (let i = 0; i < data.length; i++) {
+        let activityTag = document.createElement('p');
+        activityTag.innerHTML = data[i].log;
+        activityTag.classList.add('activity-tag');
+        activityContainer.appendChild(activityTag);
+    }
+};
+
+fetchActivity(1);
+
 let years = document.querySelectorAll('.year-titles');
 
 years.forEach(function(year) {
@@ -7,16 +37,18 @@ years.forEach(function(year) {
 });
 
 const changeYear = (year) => {
-    const currentYear = extractNumberFromString(year.innerHTML);
+    const changingYear = extractNumberFromString(year.innerHTML);
 
-    switch (currentYear) {
+    switch (changingYear) {
         case 1:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 'rgb(33, 33, 33)', 
                             'rgb(52, 52, 52)', 'rgb(235, 235, 235)');
+            fetchActivity(changingYear);
             break;
         case 2:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
                             '#551010', '#671E1E', 'rgb(235, 235, 235)')
+            fetchActivity(changingYear);
             break;
         case 3:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 
@@ -53,6 +85,8 @@ const changeYear = (year) => {
         default:
             day = "Invalid year";
     }
+
+    fetchActivity(changingYear);
 }
 
 function extractNumberFromString(inputString) {
@@ -69,6 +103,7 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
     const logo = document.querySelector('.logo');
     const yearsPanel = document.querySelector('.years-panel');
     const activityPanel = document.querySelector('.activity-panel');
+    const activityTitles = document.querySelector('.activity-titles-container');
     const rankingsPanel = document.querySelector('.rankings-panel');
     const punishmentTitle = document.querySelector('.punishment-title');
     const leagueTypeTitle = document.querySelector('.league-type-title');
@@ -77,6 +112,7 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
     logo.src = url;
     yearsPanel.style.backgroundColor = sidePanelColor;
     activityPanel.style.backgroundColor = mainPanelColor;
+    activityTitles.style.backgroundColor = sidePanelColor;
     rankingsPanel.style.backgroundColor = sidePanelColor;
     everything.forEach(function(thing) {
         thing.style.color = textColor;
@@ -87,7 +123,7 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
 };
 
 const fetchCurrentRankings = () => {
-    fetch('/rankings', {
+    fetch('/players', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -95,7 +131,6 @@ const fetchCurrentRankings = () => {
     })
     .then (response => response.json())
     .then (data => {
-        console.log(data);
         populateCurrentRankings(data);
     })
     .catch (error => {
@@ -133,30 +168,14 @@ const populateCurrentRankings = (data) => {
     })
 }
 
-const fetchActivity = () => {
-    fetch('/activity', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    .then (response => response.json())
-    .then (data => {
-        console.log(data);
-        populateActivity(data);
-    })
-    .catch (error => {
-        console.error('Error fetching rankings: ' + error);
-    })
-}
 
-fetchActivity();
 
-const populateActivity = (data) => {
+document.querySelector('.league-type-title').addEventListener('click', () => {
     const activityContainer = document.querySelector('.activity-container');
-    for (let i = 0; i < data.length; i++) {
-        let activityTag = document.createElement('p');
-        activityTag.innerHTML = data[i].message;
-        activityContainer.appendChild(activityTag);
-    }
-}
+    activityContainer.innerHTML = '';
+
+    let description = document.createElement('p');
+    description.innerHTML = 'This is the classic scoring rules'
+    activityContainer.appendChild(description);
+
+});

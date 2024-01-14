@@ -13,13 +13,24 @@
     margin: 1rem 2.5rem 0.75rem;
 }
 
+.activity-tag {
+    margin: 1rem 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
 .activity-title {
     font-size: 1.5rem;
     font-weight: 300;
     margin: 1rem 2.5rem 0.75rem;
+    display: flex;
+    align-items: center;
 }
 
 .activity-titles-container {
+    position: sticky;
+    top: 0;
+    background-color: rgb(33, 33, 33);
+    z-index: 1;
     display: flex;
     justify-content: space-between;
 }
@@ -27,7 +38,16 @@
 .activity-panel {
     background-color: rgb(52, 52, 52);
     width: 60%;
+    overflow-y: scroll;
+    min-height: 450px;
+    position: relative;
 }
+
+.activity-panel::-webkit-scrollbar {
+    display: none;
+}
+
+
 
 .avatar-container {
     width: 25%;
@@ -78,6 +98,10 @@
     font-size: 1.2rem;
 }
 
+.league-type-title:hover {
+    box-shadow: 0 0 7px rgba(255, 255, 255, 0.7);
+}
+
 .logo {
     margin: 1.5rem 0 2rem;
     width: 225px;
@@ -93,7 +117,7 @@
 .main-container {
     display: flex;
     width: 100vw;
-    height: 100vh;
+    max-height: 100vh;
 }
 
 .punishment-title {
@@ -225,6 +249,10 @@
 /*----------------------------------------------------- Mobile (Portrait) -----------------------------------------------------*/
 
 @media screen and (max-width: 425px) {
+    .activity-container {
+        margin: 1rem;
+    }
+
     .activity-panel {
         width: 100%;
     }
@@ -232,6 +260,18 @@
     .activity-title {
         font-size: 1.4rem;
         margin: 1rem;
+    }
+
+    .league-icon {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 2px solid rgb(33, 33, 33);
+        margin-left: 0.4rem;
+    }
+    
+    .league-type-title {
+        font-size: 0.75rem;
     }
 
     .main-container {
@@ -245,6 +285,7 @@
 
     .rankings-title {
         margin: 1rem;
+        font-size: 1.4rem;
     }
 
     .years-panel {
