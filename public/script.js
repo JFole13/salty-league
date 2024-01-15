@@ -43,12 +43,12 @@ const changeYear = (year) => {
         case 1:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 'rgb(33, 33, 33)', 
                             'rgb(52, 52, 52)', 'rgb(235, 235, 235)');
-            fetchActivity(changingYear);
+            changeLeagueType('Classic', 'classic-league', '/images/icons/american-football.png');
             break;
         case 2:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
-                            '#551010', '#671E1E', 'rgb(235, 235, 235)')
-            fetchActivity(changingYear);
+                            '#551010', '#671E1E', 'rgb(235, 235, 235)');
+            changeLeagueType('Vampire', 'vampire-league', '/images/icons/vampire.png');
             break;
         case 3:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 
@@ -122,6 +122,19 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
 
 };
 
+const changeLeagueType = (leagueTypeText, leagueTypeClass, url) => {
+    const leagueTypeTitle = document.querySelector('.league-type-title');
+
+    leagueTypeTitle.innerHTML = leagueTypeText;
+    leagueTypeTitle.classList.add(leagueTypeClass);
+
+    const icon = document.createElement('img');
+    icon.src = url;
+    icon.classList.add('league-icon');
+
+    leagueTypeTitle.appendChild(icon);
+}
+
 const fetchCurrentRankings = () => {
     fetch('/players', {
         method: 'GET',
@@ -168,14 +181,33 @@ const populateCurrentRankings = (data) => {
     })
 }
 
+const createCategoryContainer = (points, rules, url) => {
+    const categoryContainer = document.createElement('div');
+    categoryContainer.classList.add('category-container');
 
+    const categoryIcon = document.createElement('img');
+    categoryIcon.src = url;
 
-document.querySelector('.league-type-title').addEventListener('click', () => {
+    const categoryRulesText = document.createElement('p');
+    categoryRulesText.innerHTML = rules;
+
+    categoryContainer.appendChild(categoryIcon);
+    categoryContainer.appendChild(categoryRulesText);
+
+    return categoryContainer;
+}
+
+// League Types Rules
+
+document.querySelector('.classic-league').addEventListener('click', () => {
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
 
     let description = document.createElement('p');
-    description.innerHTML = 'This is the classic scoring rules'
+    description.classList.add('description-text');
+    description.innerHTML = 'Classic scoring rules. The six teams with the best record make the playoffs.';
+
     activityContainer.appendChild(description);
 
+    activityContainer.appendChild(createCategoryContainer('f', 'Your mother', 'images/salty-logos/png/logo-small.png'));
 });
