@@ -1,3 +1,5 @@
+const currentYear = 1;
+
 const fetchActivity = (year) => {
     fetch(`/activity/${year}`, {
         method: 'GET',
@@ -19,14 +21,24 @@ const populateActivity = (data) => {
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
     for (let i = 0; i < data.length; i++) {
+        let activityTagContainer = document.createElement('div');
+        activityTagContainer.classList.add('activity-tag-container');
+
         let activityTag = document.createElement('p');
         activityTag.innerHTML = data[i].log;
         activityTag.classList.add('activity-tag');
-        activityContainer.appendChild(activityTag);
+
+        let activityIcon = document.createElement('img');
+        activityIcon.src = `/images/icons/${data[i].icon_path}`;
+        activityIcon.classList.add('activity-icon');
+
+        activityTagContainer.appendChild(activityIcon);
+        activityTagContainer.appendChild(activityTag);
+        activityContainer.appendChild(activityTagContainer);
     }
 };
 
-fetchActivity(1);
+fetchActivity(currentYear);
 
 let years = document.querySelectorAll('.year-titles');
 
@@ -181,18 +193,24 @@ const populateCurrentRankings = (data) => {
     })
 }
 
-const createCategoryContainer = (points, rules, url) => {
+const createCategoryContainer = (rules, url) => {
     const categoryContainer = document.createElement('div');
     categoryContainer.classList.add('category-container');
 
     const categoryIcon = document.createElement('img');
+    categoryIcon.classList.add('category-rules-icon');
     categoryIcon.src = url;
 
     const categoryRulesText = document.createElement('p');
+    categoryRulesText.classList.add('category-rules-text');
     categoryRulesText.innerHTML = rules;
 
-    categoryContainer.appendChild(categoryIcon);
-    categoryContainer.appendChild(categoryRulesText);
+    const colorContainer = document.createElement('div');
+    colorContainer.classList.add('color-container');
+
+    colorContainer.appendChild(categoryIcon);
+    colorContainer.appendChild(categoryRulesText);
+    categoryContainer.appendChild(colorContainer);
 
     return categoryContainer;
 }
@@ -200,14 +218,20 @@ const createCategoryContainer = (points, rules, url) => {
 // League Types Rules
 
 document.querySelector('.classic-league').addEventListener('click', () => {
+    const categoriesContainer = document.createElement('div');
+    categoriesContainer.classList.add('categories-container');
+
+
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
 
     let description = document.createElement('p');
     description.classList.add('description-text');
+
     description.innerHTML = 'Classic scoring rules. The six teams with the best record make the playoffs.';
 
     activityContainer.appendChild(description);
+    activityContainer.appendChild(categoriesContainer);
 
-    activityContainer.appendChild(createCategoryContainer('f', 'Your mother', 'images/salty-logos/png/logo-small.png'));
+    categoriesContainer.appendChild(createCategoryContainer('Win a game (+5)', 'images/icons/trophy.png', currentYear));
 });

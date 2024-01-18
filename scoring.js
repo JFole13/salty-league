@@ -114,7 +114,7 @@ const addWinWeekPoints = (data) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ log: log, year: currentYear }),
+            body: JSON.stringify({ log: log, year: currentYear, icon_path: 'trophy.png' }),
         })
         .then(response => response.json())
         .then(data => {

@@ -53,10 +53,10 @@ app.get('/activity/:year', async (req, res) => {
 
 app.post('/activity', async (req, res) => {
     try {
-        const { log, year } = req.body;
+        const { log, year, icon_path } = req.body;
 
-        const query = `INSERT INTO activity (log, year) VALUES ($1, $2)`;
-        const values = [log, year];
+        const query = `INSERT INTO activity (log, year, icon_path) VALUES ($1, $2, $3)`;
+        const values = [log, year, icon_path];
         await client.query(query, values);
         res.json({ log: 'New Activity Posted' });
     } catch (error) {
