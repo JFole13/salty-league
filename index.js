@@ -69,7 +69,7 @@ app.put('/update/points', async (req, res) => {
         const totalPoints = req.body;
 
         for (let i = 0; i < totalPoints.length; i++) {
-            const query = 'UPDATE players SET total_points = total_points + $1 WHERE id = $2';
+            const query = 'UPDATE players SET total_points = total_points + $1 WHERE roster_id = $2';
             const values = [parseInt(totalPoints[i]), i + 1];
             await client.query(query, values);
         }

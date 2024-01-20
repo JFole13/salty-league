@@ -54,7 +54,7 @@ const changeYear = (year) => {
         case 1:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 'rgb(33, 33, 33)', 
                             'rgb(52, 52, 52)', 'rgb(235, 235, 235)');
-            //changeLeagueType('Classic', 'classic-league', '/images/icons/american-football.png');
+            changeLeagueType('Classic', 'classic-league', '/images/icons/american-football.png');
             break;
         case 2:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
@@ -213,33 +213,9 @@ const createCategoryContainer = (rules, url) => {
     return categoryContainer;
 }
 
-// League Types Rules
-
-if(document.querySelector('.classic-league')) {
-    document.querySelector('.classic-league').addEventListener('click', () => {
-        const categoriesContainer = document.createElement('div');
-        categoriesContainer.classList.add('categories-container');
-    
-    
-        const activityContainer = document.querySelector('.activity-container');
-        activityContainer.innerHTML = '';
-    
-        let description = document.createElement('p');
-        description.classList.add('description-text');
-    
-        description.innerHTML = 'Classic scoring rules. The six teams with the best record make the playoffs.';
-    
-        activityContainer.appendChild(description);
-        activityContainer.appendChild(categoriesContainer);
-    
-        categoriesContainer.appendChild(createCategoryContainer('Win a game (+5)', 'images/icons/trophy.png', currentYear));
-        categoriesContainer.appendChild(createCategoryContainer('Score above the median (+3)', 'images/icons/average.png', currentYear));
-        categoriesContainer.appendChild(createCategoryContainer('Highest Scorer (+8)', 'images/icons/number-one.png', currentYear));
-    
-    });
-}
-
-document.querySelector('.punishment-title').addEventListener('click', openModal);
+// Uncomment for when a punishment is decided 
+// document.querySelector('.punishment-title').addEventListener('click', openModal);
+document.querySelector('.punishment-close-modal-btn').addEventListener('click', closeModal);
 
 function openModal() {
   document.querySelector('.punishment-modal').style.display = 'block';
@@ -248,3 +224,5 @@ function openModal() {
 function closeModal() {
   document.querySelector('.punishment-modal').style.display = 'none';
 }
+
+

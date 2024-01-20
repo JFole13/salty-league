@@ -74,6 +74,8 @@
 .categories-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    column-gap: 10px;
+    row-gap: 10px;
 }
 
 .category-container {
@@ -183,7 +185,18 @@
     box-shadow: 0 0 7px rgba(255, 255, 255, 0.7);
 }
 
-/* Add this to your existing CSS or in a separate style block/file */
+.punishment-close-modal-btn {
+    color: #aaa;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.punishment-close-modal-btn:hover {
+    color: black;
+}
+
 .punishment-modal {
     display: none;
     position: fixed;
@@ -193,29 +206,20 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-  }
+}
   
-  .punishment-modal-container {
+.punishment-modal-container {
     background-color: rgb(52, 52, 52);
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #3e3c3c;
     border-radius: 20px;
     width: 80%;
-  }
-  
-  .close-modal {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .close-modal:hover {
-    color: black;
-  }
-  
+}
+
+.punishment-modal-title {
+    text-align: center;
+}
 
 .rank-name {
     width: 50%;

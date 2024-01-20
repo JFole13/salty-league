@@ -9,7 +9,11 @@ import fs from 'fs';
 //               => posts log log for category 
 //          => fetch update to players total points
 
-const pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+// at some point might need to break up scoring methods in different modules
+
+// put points to add in pointsStorage, index is relative to roster_id
+
+let pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const playerNames = [];
 const currentYear = 1;
 
@@ -25,8 +29,10 @@ export const updatePlayers = async () => {
 
         const data = await response.json();
 
-        for (let i = 0; i < data.length; i++) {
-            playerNames.push(data[i].team_name);
+        const sortedData = data.sort((a, b) => a.roster_id - b.roster_id);
+
+        for (let i = 0; i < sortedData.length; i++) {
+            playerNames.push(sortedData[i].team_name);
         }
 
         updateScoring();
@@ -50,15 +56,9 @@ export const updateScoring = () => {
     .then(response => response.json())
     .then(data => {
         exportData(data);
+        addHighestScorerPoints(data);
+        addMedianPoints(data);
         addWinWeekPoints(data);
-        return fetch('http://192.168.1.121:3000/update/points', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(pointsStorage)
-    })
-    .then (response => response.json())
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
@@ -80,12 +80,79 @@ const exportData = (data) => {
     }
 }
 
-const addWinWeekPoints = (data) => {
-    const matchups = [[],[],[],[],[]];
+const addHighestScorerPoints = (data) => {
     const plusPoints = 5;
     const noPoints = 0;
 
+    const sortedData = data.sort((a, b) => b.points - a.points);
+    let log;
 
+    for (let i = 0; i < sortedData.length; i++) {
+        if(i == 0) {
+            pointsStorage[sortedData[i].roster_id - 1] = plusPoints;
+            log = `${playerNames[sortedData[i].roster_id - 1]} was the highest scorer (+5)`;
+            fetch('http://192.168.1.121:3000/activity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ log: log, year: currentYear, icon_path: 'number-one.png' }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data);
+            })
+            .catch(error => {
+                console.error('Error posting log: ', error);
+            })
+        } else {
+            pointsStorage[sortedData[i].roster_id - 1] = noPoints;
+        }
+    }
+
+    updateTotalPoints();
+}
+
+const addMedianPoints = (data) => {
+    const plusPoints = 3;
+    const noPoints = 0;
+
+    const sortedData = data.sort((a, b) => b.points - a.points);
+    let log;
+
+    for (let i = 0; i < sortedData.length; i++) {
+        if (i < 5) {
+            pointsStorage[sortedData[i].roster_id - 1] = plusPoints;
+            log = `${playerNames[sortedData[i].roster_id - 1]} scored above the median (+3)`;
+            
+            fetch('http://192.168.1.121:3000/activity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ log: log, year: currentYear, icon_path: 'average.png' }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data);
+            })
+            .catch(error => {
+                console.error('Error posting log: ', error);
+            })
+        } else {
+            pointsStorage[sortedData[i].roster_id - 1] = noPoints;
+        }
+    }
+
+    updateTotalPoints();
+}
+
+const addWinWeekPoints = (data) => {
+    const plusPoints = 5;
+    const noPoints = 0;
+
+    const matchups = [[],[],[],[],[]];
+    
     for (let i = 0; i < data.length; i++) {
         let matchupIndex = data[i].matchup_id - 1;
         matchups[matchupIndex].push({'roster_id': data[i].roster_id, 'points': data[i].points});
@@ -118,10 +185,24 @@ const addWinWeekPoints = (data) => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            //console.log(data)
         })
         .catch(error => {
             console.error('Error posting log: ', error);
         })
     });
+
+    updateTotalPoints();
+}
+
+const updateTotalPoints = () => {
+    fetch('http://192.168.1.121:3000/update/points', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(pointsStorage)
+        })
+
+    pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 }
