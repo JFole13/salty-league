@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import pkg from 'pg'
 import schedule from 'node-schedule';
-import { updatePlayers, updateScoring } from './scoring.js';
+import { updatePlayers, updateRanks } from './scoring.js';
 const { Client } = pkg;
 
 const client = new Client({
@@ -53,10 +53,10 @@ app.get('/activity/:year', async (req, res) => {
 
 app.post('/activity', async (req, res) => {
     try {
-        const { log, year, icon_path } = req.body;
+        const { log, year, icon_path, week } = req.body;
 
-        const query = `INSERT INTO activity (log, year, icon_path) VALUES ($1, $2, $3)`;
-        const values = [log, year, icon_path];
+        const query = `INSERT INTO activity (log, year, icon_path, week) VALUES ($1, $2, $3, $4)`;
+        const values = [log, year, icon_path, week];
         await client.query(query, values);
         res.json({ log: 'New Activity Posted' });
     } catch (error) {
@@ -75,6 +75,23 @@ app.put('/update/points', async (req, res) => {
         }
 
         res.json({ message: 'Total points updated successfully' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+app.put('/update/ranks', async (req, res) => {
+    try {
+        const ranks = req.body;
+
+        for (let i = 0; i < ranks.length; i++) {
+            const query = `UPDATE players SET rank = $1 WHERE roster_id = $2`;
+            const values = [parseInt(ranks[i]), i + 1];
+            await client.query(query, values);
+        }
+
+        res.json({ message: 'Ranks updated successfully' });
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -113,6 +130,7 @@ rule.dayOfWeek = 3;
 rule.hour = 20;
 rule.minute = 13;
 
+updateRanks();
 updatePlayers();
 
 //const job = schedule.scheduleJob(rule, updateScoring);

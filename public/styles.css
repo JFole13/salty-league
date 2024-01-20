@@ -58,6 +58,11 @@
     display: none;
 }
 
+.activity-week-title {
+    font-weight: 100;
+    margin-top: 1rem;
+}
+
 .avatar-container {
     width: 25%;
     display: flex;

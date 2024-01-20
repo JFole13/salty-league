@@ -1,4 +1,5 @@
 const currentYear = 1;
+let currentWeek = 1;
 
 const fetchActivity = (year) => {
     fetch(`/activity/${year}`, {
@@ -17,9 +18,22 @@ const fetchActivity = (year) => {
 };
 
 const populateActivity = (data) => {
+    data = data.sort((a, b) => b.week - a.week);
+
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
+
+    let weekCounter = currentWeek;
+
     for (let i = 0; i < data.length; i++) {
+        if(data[i].week == weekCounter) {
+            const weekTitle = document.createElement('h3');
+            weekTitle.classList.add('activity-week-title');
+            weekTitle.innerHTML = `Week ${weekCounter}`;
+            activityContainer.appendChild(weekTitle);
+            weekCounter--;
+        }
+        
         let activityTagContainer = document.createElement('div');
         activityTagContainer.classList.add('activity-tag-container');
 
