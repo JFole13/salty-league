@@ -1,6 +1,10 @@
 import fetch from 'node-fetch';
 import fs from 'fs';
 
+const rawData = fs.readFileSync('./players.json');
+const sleeperPlayerData = JSON.parse(rawData);
+
+
 // Call stack basically looks like 
 // updateScoring()
 //      => fetch matchup data
@@ -98,10 +102,11 @@ export const updateScoring = (playersData) => {
     .then(data => {
         exportData(data);
         addHighestScorerPoints(data);
+        addHighestPlayerPoints(data);
         addMedianPoints(data);
         addWinWeekPoints(data);
         addUpsetPoints(data, playersData);
-        addHighestPlayerPoints(data);
+        addEffecientManagerPoints(data);
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
@@ -125,12 +130,11 @@ const exportData = (data) => {
 
 const addHighestPlayerPoints = (data) => {
     const plusPoints = 3;
-    const noPoints = 0;
 
     let highestScorer = 0;
     let teamWithHighestScorer = 1;
     for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < data[i].starters_points; j++) {
+        for (let j = 0; j < data[i].starters_points.length; j++) {
             let currentTeam = data[i].starters_points;
             if (currentTeam[j] > highestScorer) {
                 highestScorer = currentTeam[j];
