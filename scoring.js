@@ -103,10 +103,13 @@ export const updateScoring = (playersData) => {
         exportData(data);
         addHighestScorerPoints(data);
         addHighestPlayerPoints(data);
+        addBlowoutPoints(data);
+        addHighestPointsInLossPoints(data);
+        addTopGuyTakedownPoints(data, playersData);
+        addUpsetPoints(data, playersData);
         addMedianPoints(data);
         addWinWeekPoints(data);
-        addUpsetPoints(data, playersData);
-        addEffecientManagerPoints(data);
+        //addEffecientManagerPoints(data);
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
@@ -128,6 +131,40 @@ const exportData = (data) => {
     }
 }
 
+const addBlowoutPoints = (data) => {
+    const plusPoints = 2;
+
+    const matchups = [[],[],[],[],[]];
+    
+    for (let i = 0; i < data.length; i++) {
+        let matchupIndex = data[i].matchup_id - 1;
+        matchups[matchupIndex].push({'roster_id': data[i].roster_id, 'points': data[i].points});
+    }
+
+    let biggestBlowout = 0;
+    let biggestBlowoutTeam;
+
+    matchups.forEach(matchup => {
+        const [team1, team2] = matchup;
+
+        if(Math.abs(team1.points - team2.points) > biggestBlowout) {
+            biggestBlowout = Math.abs(team1.points - team2.points);
+            if (team1.points > team2.points) {
+                biggestBlowoutTeam = team1.roster_id;
+            } else {
+                biggestBlowoutTeam = team2.roster_id;
+            }
+        }
+    });
+
+    pointsStorage[biggestBlowoutTeam - 1] = plusPoints;
+    let log = `${playerNames[biggestBlowoutTeam - 1]} had the biggest blowout (+2)`;
+
+    updateActivity(log, 'nuclear-explosion.png');
+    updateTotalPoints();
+
+}
+
 const addHighestPlayerPoints = (data) => {
     const plusPoints = 3;
 
@@ -146,6 +183,44 @@ const addHighestPlayerPoints = (data) => {
     pointsStorage[teamWithHighestScorer - 1] = plusPoints;
     let log = `${playerNames[teamWithHighestScorer - 1]} had the highest scoring player (+3)`;
     updateActivity(log, 'favorites.png');
+    updateTotalPoints();
+}
+
+const addHighestPointsInLossPoints = (data) => {
+    const plusPoints = 2;
+
+    const matchups = [[],[],[],[],[]];
+
+    for (let i = 0; i < data.length; i++) {
+        let matchupIndex = data[i].matchup_id - 1;
+        matchups[matchupIndex].push({'roster_id': data[i].roster_id, 'points': data[i].points});
+    }
+
+    let highestLosingPoints = 0;
+    let highestLosingPointsTeam;
+
+    matchups.forEach(matchup => {
+        const [team1, team2] = matchup;
+
+        if(team1.points > team2.points) {
+            if(team2.points > highestLosingPoints) {
+                highestLosingPoints = team2.points;
+                highestLosingPointsTeam = team2.roster_id;
+            }
+        } else if (team1.points < team2.points) {
+            if(team1.points > highestLosingPoints) {
+                highestLosingPoints = team1.points;
+                highestLosingPointsTeam = team1.roster_id;
+            }
+        } else {
+
+        }
+    });
+
+    pointsStorage[highestLosingPointsTeam - 1] = plusPoints;
+    let log = `${playerNames[highestLosingPointsTeam - 1]} had the highest points in a loss (+2)`;
+
+    updateActivity(log, 'broken-heart.png');
     updateTotalPoints();
 }
 
@@ -187,13 +262,54 @@ const addMedianPoints = (data) => {
     updateTotalPoints();
 }
 
+const addTopGuyTakedownPoints = (data, playersData) => {
+    const plusPoints = 3;
+    const noPoints = 0;
+
+    const rosterIdsOrder = data.map(entry => entry.roster_id);
+    playersData.sort((a, b) => {
+        return rosterIdsOrder.indexOf(a.roster_id) - rosterIdsOrder.indexOf(b.roster_id);
+    });
+
+    const matchups = [[],[],[],[],[]];
+    
+    for (let i = 0; i < data.length; i++) {
+        let matchupIndex = data[i].matchup_id - 1;
+
+        matchups[matchupIndex].push({'roster_id': data[i].roster_id, 'points': data[i].points, 'rank': playersData[i].rank});
+    }
+
+    let log;
+
+    matchups.forEach(matchup => {
+        const [team1, team2] = matchup;
+        
+        if (team1.rank == 1 || team2.rank == 1) {
+            if(team1.rank == 1 && team2.points > team1.points) {
+                pointsStorage[team2.roster_id - 1] = plusPoints;
+                log = `${playerNames[team2.roster_id - 1]} took down the #1 player (+3)`;
+                updateActivity(log, 'checkmate.png');
+            }
+
+            if(team2.rank == 1 && team1.points > team2.points) {
+                pointsStorage[team1.roster_id - 1] = plusPoints;
+                log = `${playerNames[team1.roster_id - 1]} took down the #1 player (+3)`;
+                updateActivity(log, 'checkmate.png');
+            }
+        }
+    });
+
+    updateTotalPoints();
+
+}
+
 const addUpsetPoints = (data, playersData) => {
     const plusPoints = 2;
     const noPoints = 0;
 
     const rosterIdsOrder = data.map(entry => entry.roster_id);
     playersData.sort((a, b) => {
-    return rosterIdsOrder.indexOf(a.roster_id) - rosterIdsOrder.indexOf(b.roster_id);
+        return rosterIdsOrder.indexOf(a.roster_id) - rosterIdsOrder.indexOf(b.roster_id);
     });
 
     const matchups = [[],[],[],[],[]];
