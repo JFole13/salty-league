@@ -1,5 +1,5 @@
 const currentYear = 1;
-let currentWeek = 1;
+let currentWeek = 14;
 
 const fetchActivity = (year) => {
     fetch(`/activity/${year}`, {
@@ -23,7 +23,12 @@ const populateActivity = (data) => {
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
 
+    console.log(data)
+
+
     let weekCounter = currentWeek;
+
+
 
     for (let i = 0; i < data.length; i++) {
         if(data[i].week == weekCounter) {
@@ -49,6 +54,8 @@ const populateActivity = (data) => {
         activityTagContainer.appendChild(activityTag);
         activityContainer.appendChild(activityTagContainer);
     }
+
+    console.log(data)
 };
 
 fetchActivity(currentYear);

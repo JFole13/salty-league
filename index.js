@@ -131,6 +131,9 @@ rule.hour = 20;
 rule.minute = 13;
 
 updateRanks();
-updatePlayers();
+for (let i = 1; i < 15; i++) {
+    updatePlayers(i);
+}
+// updatePlayers(11);
 
 //const job = schedule.scheduleJob(rule, updateScoring);

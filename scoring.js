@@ -21,7 +21,7 @@ let pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const playerNames = [];
 const currentYear = 1;
 // gonna have to change this once i set up the time stuff
-const currentWeek = 1;
+let currentWeek = 1;
 
 export const updateRanks = async () => {
     try {
@@ -68,7 +68,7 @@ export const updateRanks = async () => {
 }
 
 
-export const updatePlayers = async () => {
+export const updatePlayers = async (week) => {
     try {
         const response = await fetch('http://192.168.1.121:3000/players', {
             method: 'GET',
@@ -85,14 +85,14 @@ export const updatePlayers = async () => {
             playerNames.push(playersData[i].team_name);
         }
 
-        updateScoring(playersData);
+        updateScoring(playersData, week);
     } catch (error) {
         console.log('Error getting players: ', error);
     }
 }
 
-export const updateScoring = (playersData) => {
-    fetch(`https://api.sleeper.app/v1/league/995196431700942848/matchups/1`, {
+export const updateScoring = (playersData, week) => {
+    fetch(`https://api.sleeper.app/v1/league/995196431700942848/matchups/${week}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -100,16 +100,23 @@ export const updateScoring = (playersData) => {
     })
     .then(response => response.json())
     .then(data => {
-        exportData(data);
-        addHighestScorerPoints(data);
-        addHighestPlayerPoints(data);
-        addBlowoutPoints(data);
-        addHighestPointsInLossPoints(data);
-        addTopGuyTakedownPoints(data, playersData);
-        addUpsetPoints(data, playersData);
-        addMedianPoints(data);
-        addWinWeekPoints(data);
-        //addEffecientManagerPoints(data);
+        if (currentWeek != 15) {
+            exportData(data);
+            addHighestScorerPoints(data);
+            addHighestPlayerPoints(data);
+            addBlowoutPoints(data, week);
+            addHighestPointsInLossPoints(data);
+            addTopGuyTakedownPoints(data, playersData);
+            //addRivalPoints(data, playersData);
+            addUpsetPoints(data, playersData);
+            addMedianPoints(data);
+            addWinWeekPoints(data);
+            currentWeek++;
+
+            //addEffecientManagerPoints(data);
+        } else {
+            exportData(data);
+        }
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
@@ -131,7 +138,7 @@ const exportData = (data) => {
     }
 }
 
-const addBlowoutPoints = (data) => {
+const addBlowoutPoints = (data, week) => {
     const plusPoints = 2;
 
     const matchups = [[],[],[],[],[]];
@@ -143,6 +150,8 @@ const addBlowoutPoints = (data) => {
 
     let biggestBlowout = 0;
     let biggestBlowoutTeam;
+
+   
 
     matchups.forEach(matchup => {
         const [team1, team2] = matchup;
@@ -162,7 +171,6 @@ const addBlowoutPoints = (data) => {
 
     updateActivity(log, 'nuclear-explosion.png');
     updateTotalPoints();
-
 }
 
 const addHighestPlayerPoints = (data) => {
@@ -258,6 +266,46 @@ const addMedianPoints = (data) => {
             pointsStorage[sortedData[i].roster_id - 1] = noPoints;
         }
     }
+
+    updateTotalPoints();
+}
+
+const addRivalPoints = (data, playersData) => {
+    const plusPoints = 5;
+
+    const rosterIdsOrder = data.map(entry => entry.roster_id);
+    playersData.sort((a, b) => {
+        return rosterIdsOrder.indexOf(a.roster_id) - rosterIdsOrder.indexOf(b.roster_id);
+    });
+
+    const matchups = [[],[],[],[],[]];
+    
+    for (let i = 0; i < data.length; i++) {
+        let matchupIndex = data[i].matchup_id - 1;
+
+        matchups[matchupIndex].push({'roster_id': data[i].roster_id, 'points': data[i].points, 'rank': playersData[i].rank, 'rival_id': playersData[i].rival_id});
+    }
+
+    let log;
+
+    matchups.forEach(matchup => {
+        const [team1, team2] = matchup;
+        
+        if (team1.rival_id == team2.roster_id || team2.rival_id == team1.roster_id) {
+            if (team1.points > team2.points) {
+                pointsStorage[team1.roster_id - 1] = plusPoints;
+                log = `${playerNames[team1.roster_id - 1]} beat their rival (+5)`;
+                updateActivity(log, 'rival.png');
+            } else if (team1.points < team2.points) {
+                pointsStorage[team2.roster_id - 1] = plusPoints;
+                log = `${playerNames[team2.roster_id - 1]} beat their rival (+5)`;
+                updateActivity(log, 'rival.png');
+            } else {
+              // figure out tie
+            }
+        }
+
+    });
 
     updateTotalPoints();
 }
