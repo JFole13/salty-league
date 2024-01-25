@@ -35,7 +35,7 @@ const populateActivity = (data) => {
             const weekTitle = document.createElement('h3');
             weekTitle.classList.add('activity-week-title');
             weekTitle.innerHTML = `Week ${weekCounter}`;
-            activityContainer.appendChild(weekTitle);
+            activityContainer.append(weekTitle);
             weekCounter--;
         }
         
@@ -50,9 +50,9 @@ const populateActivity = (data) => {
         activityIcon.src = `/images/icons/${data[i].icon_path}`;
         activityIcon.classList.add('activity-icon');
 
-        activityTagContainer.appendChild(activityIcon);
-        activityTagContainer.appendChild(activityTag);
-        activityContainer.appendChild(activityTagContainer);
+        activityTagContainer.append(activityIcon);
+        activityTagContainer.append(activityTag);
+        activityContainer.append(activityTagContainer);
     }
 
     console.log(data)
@@ -163,7 +163,7 @@ const changeLeagueType = (leagueTypeText, leagueTypeClass, url) => {
     icon.src = url;
     icon.classList.add('league-icon');
 
-    leagueTypeTitle.appendChild(icon);
+    leagueTypeTitle.append(icon);
 }
 
 const fetchCurrentRankings = () => {
@@ -227,9 +227,9 @@ const createCategoryContainer = (rules, url) => {
     const colorContainer = document.createElement('div');
     colorContainer.classList.add('color-container');
 
-    colorContainer.appendChild(categoryIcon);
-    colorContainer.appendChild(categoryRulesText);
-    categoryContainer.appendChild(colorContainer);
+    colorContainer.append(categoryIcon);
+    colorContainer.append(categoryRulesText);
+    categoryContainer.append(colorContainer);
 
     return categoryContainer;
 }

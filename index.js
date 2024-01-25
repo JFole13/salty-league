@@ -134,6 +134,6 @@ updateRanks();
 for (let i = 1; i < 15; i++) {
     updatePlayers(i);
 }
-// updatePlayers(11);
+//updatePlayers(2);
 
 //const job = schedule.scheduleJob(rule, updateScoring);

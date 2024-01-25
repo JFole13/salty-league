@@ -100,14 +100,15 @@ export const updateScoring = (playersData, week) => {
     })
     .then(response => response.json())
     .then(data => {
-        if (currentWeek != 15) {
+        // if is weekly categories, else is end of regular season
+        if (currentWeek != 14) {
             exportData(data);
             addHighestScorerPoints(data);
             addHighestPlayerPoints(data);
             addBlowoutPoints(data, week);
             addHighestPointsInLossPoints(data);
             addTopGuyTakedownPoints(data, playersData);
-            //addRivalPoints(data, playersData);
+            addRivalPoints(data, playersData);
             addUpsetPoints(data, playersData);
             addMedianPoints(data);
             addWinWeekPoints(data);
@@ -116,6 +117,7 @@ export const updateScoring = (playersData, week) => {
             //addEffecientManagerPoints(data);
         } else {
             exportData(data);
+            addUndefeatedPoints(playersData);
         }
     })
     .catch(error => {
@@ -167,7 +169,7 @@ const addBlowoutPoints = (data, week) => {
     });
 
     pointsStorage[biggestBlowoutTeam - 1] = plusPoints;
-    let log = `${playerNames[biggestBlowoutTeam - 1]} had the biggest blowout (+2)`;
+    let log = `${playerNames[biggestBlowoutTeam - 1]} had the biggest blowout win (+2)`;
 
     updateActivity(log, 'nuclear-explosion.png');
     updateTotalPoints();
@@ -349,6 +351,18 @@ const addTopGuyTakedownPoints = (data, playersData) => {
 
     updateTotalPoints();
 
+}
+
+const addUndefeatedPoints = (playersData) => {
+    const plusPoints = 25;
+
+    for (let i = 0; i < playersData.length; i++) {
+        if (playersData[i].settings.losses == 0) {
+            pointsStorage[playersData[i].roster_id - 1] = plusPoints;
+            log = `${playerNames[playersData[i].roster_id - 1]} went UNDEFEATED (+25)`;
+            updateActivity(log, 'diamond.png');
+        }
+    }
 }
 
 const addUpsetPoints = (data, playersData) => {

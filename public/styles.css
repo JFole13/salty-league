@@ -262,6 +262,16 @@
     margin: 1rem 0;
 }
 
+.weekly-categories-title {
+    font-weight: 100;
+    margin-bottom: 1rem;
+}
+
+.yearly-categories-title {
+    font-weight: 100;
+    margin: 1rem 0;
+}
+
 .year1:hover, .year1:focus, .year1:active {
     background-color: rgb(33, 33, 33);
 }
