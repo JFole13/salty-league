@@ -68,7 +68,7 @@ export const updateRanks = async () => {
 }
 
 
-export const updatePlayers = async (week) => {
+export const updateWeek = async (week) => {
     try {
         const response = await fetch('http://192.168.1.121:3000/players', {
             method: 'GET',
@@ -91,6 +91,22 @@ export const updatePlayers = async (week) => {
     }
 }
 
+export const updateYear = () => {
+    fetch('https://api.sleeper.app/v1/league/995196431700942848/rosters', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        addUndefeatedPoints(data);
+    })
+    .catch(error => {
+        console.error('Error getting year stats:', error);
+    })
+}
+
 export const updateScoring = (playersData, week) => {
     fetch(`https://api.sleeper.app/v1/league/995196431700942848/matchups/${week}`, {
         method: 'GET',
@@ -100,25 +116,21 @@ export const updateScoring = (playersData, week) => {
     })
     .then(response => response.json())
     .then(data => {
-        // if is weekly categories, else is end of regular season
-        if (currentWeek != 14) {
-            exportData(data);
-            addHighestScorerPoints(data);
-            addHighestPlayerPoints(data);
-            addBlowoutPoints(data, week);
-            addHighestPointsInLossPoints(data);
-            addTopGuyTakedownPoints(data, playersData);
-            addRivalPoints(data, playersData);
-            addUpsetPoints(data, playersData);
-            addMedianPoints(data);
-            addWinWeekPoints(data);
-            currentWeek++;
+        exportData(data);
+        addHighestScorerPoints(data);
+        addHighestPlayerPoints(data);
+        addBlowoutPoints(data, week);
+        addHighestPointsInLossPoints(data);
+        addTopGuyTakedownPoints(data, playersData);
+        addRivalPoints(data, playersData);
+        addUpsetPoints(data, playersData);
+        addMedianPoints(data);
+        addWinWeekPoints(data);
+        addUndefeatedPoints(playersData);
 
-            //addEffecientManagerPoints(data);
-        } else {
-            exportData(data);
-            addUndefeatedPoints(playersData);
-        }
+        currentWeek++;
+
+        //addEffecientManagerPoints(data);
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
@@ -353,16 +365,18 @@ const addTopGuyTakedownPoints = (data, playersData) => {
 
 }
 
-const addUndefeatedPoints = (playersData) => {
+const addUndefeatedPoints = (data) => {
     const plusPoints = 25;
 
-    for (let i = 0; i < playersData.length; i++) {
-        if (playersData[i].settings.losses == 0) {
-            pointsStorage[playersData[i].roster_id - 1] = plusPoints;
-            log = `${playerNames[playersData[i].roster_id - 1]} went UNDEFEATED (+25)`;
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].settings.losses == 0) {
+            pointsStorage[data[i].roster_id - 1] = plusPoints;
+            log = `${playerNames[data[i].roster_id - 1]} went UNDEFEATED (+25)`;
             updateActivity(log, 'diamond.png');
         }
     }
+
+    updateTotalPoints();
 }
 
 const addUpsetPoints = (data, playersData) => {
