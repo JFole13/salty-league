@@ -4,6 +4,9 @@ import fs from 'fs';
 const rawData = fs.readFileSync('./players.json');
 const sleeperPlayerData = JSON.parse(rawData);
 
+const unData = fs.readFileSync('./undefeated-test.json');
+const undefeatedData = JSON.parse(unData);
+
 
 // Call stack basically looks like 
 // updateScoring()
@@ -101,6 +104,41 @@ export const updateYear = () => {
     .then(response => response.json())
     .then(data => {
         addUndefeatedPoints(data);
+        addLongestStreakPoints(data);
+        addMostPointsForPoints(data);
+        addMostPointsAgainstPoints(data);
+    })
+    .catch(error => {
+        console.error('Error getting year stats:', error);
+    })
+}
+
+export const updateWinnerBracketPlacements = () => {
+    fetch('https://api.sleeper.app/v1/league/995196431700942848/winners_bracket', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        addWinnerBracketPlacementsPoints(data);
+    })
+    .catch(error => {
+        console.error('Error getting year stats:', error);
+    })
+}
+
+export const updateLoserBracketPlacements = () => {
+    fetch('https://api.sleeper.app/v1/league/995196431700942848/losers_bracket', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        addLoserBracketPlacementsPoints(data);
     })
     .catch(error => {
         console.error('Error getting year stats:', error);
@@ -126,11 +164,7 @@ export const updateScoring = (playersData, week) => {
         addUpsetPoints(data, playersData);
         addMedianPoints(data);
         addWinWeekPoints(data);
-        addUndefeatedPoints(playersData);
-
         currentWeek++;
-
-        //addEffecientManagerPoints(data);
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
@@ -265,6 +299,77 @@ const addHighestScorerPoints = (data) => {
     updateTotalPoints();
 }
 
+const addLongestStreakPoints = (data) => {
+    const plusPoints = 15;
+    
+    let longestStreak = 0;
+    let currentStreak = 0;
+    let longestStreakTeams = [];
+
+    for (let i = 0; i < data.length; i++) {
+        currentStreak = 0; // Reset currentStreak for each team
+
+        for (let j = 0; j < data[i].metadata.record.length; j++) {
+            if (data[i].metadata.record[j] === 'W') {
+                currentStreak++;
+            } else {
+                if (currentStreak > longestStreak) {
+                    longestStreak = currentStreak;
+                    longestStreakTeams = [data[i].roster_id];
+                } else if (currentStreak === longestStreak) {
+                    longestStreakTeams.push(data[i].roster_id);
+                }
+                currentStreak = 0; // Reset streak as it's broken
+            }
+        }
+
+        // Check at the end of the record in case the record ends with a winning streak
+        if (currentStreak > longestStreak) {
+            longestStreak = currentStreak;
+            longestStreakTeams = [data[i].roster_id];
+        } else if (currentStreak === longestStreak) {
+            longestStreakTeams.push(data[i].roster_id);
+        }
+    }
+
+    for (let i = 0; i < longestStreakTeams.length; i++) {
+        let log = `${playerNames[longestStreakTeams[i] - 1]} had the longest winning streak (+15)`;
+        updateActivity(log, 'fire-flame.png');
+
+        pointsStorage[longestStreakTeams[i] - 1] = plusPoints;
+    }
+
+    updateTotalPoints();
+}
+
+const addLoserBracketPlacementsPoints = (data) => {
+    const seventhPlacePoints = 21;
+    const eighthPlacePoints = 18;
+    const ninthPlacePoints = 15;
+    const tenthPlacePoints = 13;
+
+    const seventhPlaceTeam = data[3].l;
+    const eighthPlaceTeam = data[3].w;
+    const ninthPlaceTeam = data[2].l;
+    const tenthPlaceTeam = data[2].w;
+
+    let log = `${playerNames[seventhPlaceTeam - 1]} finished in seventh place (+21)`;
+    updateActivity(log, 'loser.png');
+    log = `${playerNames[eighthPlaceTeam - 1]} finished in eighth place (+18)`;
+    updateActivity(log, 'dead-fish.png');
+    log = `${playerNames[ninthPlaceTeam - 1]} finished in ninth place (+15)`;
+    updateActivity(log, 'trash-can.png');
+    log = `${playerNames[tenthPlaceTeam - 1]} finished in tenth place (+13)`;
+    updateActivity(log, 'poop.png');
+
+    pointsStorage[seventhPlaceTeam - 1] = seventhPlacePoints;
+    pointsStorage[eighthPlaceTeam - 1] = eighthPlacePoints;
+    pointsStorage[ninthPlaceTeam - 1] = ninthPlacePoints;
+    pointsStorage[tenthPlaceTeam - 1] = tenthPlacePoints;
+
+    updateTotalPoints();
+}
+
 const addMedianPoints = (data) => {
     const plusPoints = 3;
     const noPoints = 0;
@@ -283,6 +388,48 @@ const addMedianPoints = (data) => {
 
     updateTotalPoints();
 }
+
+const addMostPointsAgainstPoints = (data) => {
+    const plusPoints = 10;
+
+    let leastPoints = 0;
+    let leastPointsTeam;
+
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].settings.fpts_against > leastPoints) {
+            leastPoints = data[i].settings.fpts_against;
+            leastPointsTeam = data[i].roster_id;
+        }
+    }
+
+    let log = `${playerNames[leastPointsTeam - 1]} had the most points against this season (+10)`;
+    updateActivity(log, 'black-cat.png');
+    
+    pointsStorage[leastPointsTeam - 1] = plusPoints;
+    updateTotalPoints();
+}
+
+const addMostPointsForPoints = (data) => {
+    const plusPoints = 25;
+
+    let mostPoints = 0;
+    let mostPointsTeam;
+
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].settings.fpts > mostPoints) {
+            mostPoints = data[i].settings.fpts;
+            mostPointsTeam = data[i].roster_id;
+        }
+    }
+
+    let log = `${playerNames[mostPointsTeam - 1]} scored the most points this season (+25)`;
+    updateActivity(log, 'money-bag.png');
+    
+    pointsStorage[mostPointsTeam - 1] = plusPoints;
+    updateTotalPoints();
+}
+
+
 
 const addRivalPoints = (data, playersData) => {
     const plusPoints = 5;
@@ -366,12 +513,12 @@ const addTopGuyTakedownPoints = (data, playersData) => {
 }
 
 const addUndefeatedPoints = (data) => {
-    const plusPoints = 25;
+    const plusPoints = 30;
 
     for (let i = 0; i < data.length; i++) {
         if (data[i].settings.losses == 0) {
             pointsStorage[data[i].roster_id - 1] = plusPoints;
-            log = `${playerNames[data[i].roster_id - 1]} went UNDEFEATED (+25)`;
+            let log = `${playerNames[data[i].roster_id - 1]} went UNDEFEATED (+30)`;
             updateActivity(log, 'diamond.png');
         }
     }
@@ -421,6 +568,48 @@ const addUpsetPoints = (data, playersData) => {
 
     updateTotalPoints();
 
+}
+
+const addWinnerBracketPlacementsPoints = (data) => {
+    const firstPlacePoints = 100;
+    const secondPlacePoints = 70;
+    const thirdPlacePoints = 50;
+    const fourthPlacePoints = 30;
+    const fifthPlacePoints = 27;
+    const sixthPlacePoints = 24;
+    // const seventhPlacePoints = 21;
+    // const eighthPlacePoints = 18;
+    // const ninthPlacePoints = 15;
+    // const tenthPlacePoints = 13;
+
+    const firstPlaceTeam = data[5].w;
+    const secondPlaceTeam = data[5].l;
+    const thirdPlaceTeam = data[6].w;
+    const fourthPlaceTeam = data[6].l;
+    const fifthPlaceTeam = data[4].w;
+    const sixthPlaceTeam = data[4].l;
+
+    let log = `${playerNames[firstPlaceTeam - 1]} finished in first place (+100)`;
+    updateActivity(log, 'crown.png');
+    log = `${playerNames[secondPlaceTeam - 1]} finished in second place (+70)`;
+    updateActivity(log, 'second-prize.png');
+    log = `${playerNames[thirdPlaceTeam - 1]} finished in third place (+50)`;
+    updateActivity(log, 'third-prize.png');
+    log = `${playerNames[fourthPlaceTeam - 1]} finished in fourth place (+30)`;
+    updateActivity(log, 'thumb-up.png');
+    log = `${playerNames[fifthPlaceTeam - 1]} finished in fifth place (+27)`;
+    updateActivity(log, 'mid.png');
+    log = `${playerNames[sixthPlaceTeam - 1]} finished in sixth place (+24)`;
+    updateActivity(log, 'open-mouth.png');
+
+    pointsStorage[firstPlaceTeam - 1] = firstPlacePoints;
+    pointsStorage[secondPlaceTeam - 1] = secondPlacePoints;
+    pointsStorage[thirdPlaceTeam - 1] = thirdPlacePoints;
+    pointsStorage[fourthPlaceTeam - 1] = fourthPlacePoints;
+    pointsStorage[fifthPlaceTeam - 1] = fifthPlacePoints;
+    pointsStorage[sixthPlaceTeam - 1] = sixthPlacePoints;
+
+    updateTotalPoints();
 }
 
 const addWinWeekPoints = (data) => {

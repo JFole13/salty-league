@@ -36,7 +36,21 @@ if(document.querySelector('.classic-league')) {
 
         activityContainer.append(yearlyCategoriesTitle, yearlyCategoriesContainer);
 
-        yearlyCategoriesContainer.append(createCategoryContainer('Go Undefeated (+25)', 'images/icons/diamond.png'));
-
+        yearlyCategoriesContainer.append(createCategoryContainer('Go Undefeated (+30)', 'images/icons/diamond.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Most Points For (+25)', 'images/icons/money-bag.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Most Points Against (+10)', 'images/icons/black-cat.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Longest Winning Streak (+15)', 'images/icons/fire-flame.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Best Trade (+20)', 'images/icons/handshake.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Best Draft (+20)', 'images/icons/businessman.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('First Place (+100)', 'images/icons/crown.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Second Place (+70)', 'images/icons/second-prize.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Third Place (+50)', 'images/icons/third-prize.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Fourth Place (+30)', 'images/icons/thumb-up.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Fifth Place (+27)', 'images/icons/mid.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Sixth Place (+24)', 'images/icons/open-mouth.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Seventh Place (+21)', 'images/icons/loser.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Eighth Place (+18)', 'images/icons/dead-fish.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Ninth Place (+15)', 'images/icons/trash-can.png'));
+        yearlyCategoriesContainer.append(createCategoryContainer('Last Place (+13)', 'images/icons/poop.png'));
     });
 }

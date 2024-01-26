@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import pkg from 'pg'
 import schedule from 'node-schedule';
-import { updateRanks, updateWeek, updateYear } from './scoring.js';
+import { updateWinnerBracketPlacements, updateLoserBracketPlacements, updateRanks, updateWeek, updateYear } from './scoring.js';
 const { Client } = pkg;
 
 const client = new Client({
@@ -131,10 +131,13 @@ rule.hour = 20;
 rule.minute = 13;
 
 updateRanks();
-// for (let i = 1; i < 15; i++) {
-//     updatePlayers(i);
-// }
+for (let i = 1; i < 15; i++) {
+    updateWeek(i);
+}
 //updateWeek(1);
 updateYear();
+updateWinnerBracketPlacements();
+updateLoserBracketPlacements();
+
 
 //const job = schedule.scheduleJob(rule, updateScoring);
