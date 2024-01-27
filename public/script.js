@@ -75,10 +75,10 @@ const changeYear = (year) => {
         case 1:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 'rgb(33, 33, 33)', 
                             'rgb(52, 52, 52)', 'rgb(235, 235, 235)');
-            changeLeagueType('Classic', 'classic-league', '/images/icons/american-football.png');
+            //changeLeagueType('Classic', 'classic-league', '/images/icons/american-football.png');
             break;
         case 2:
-            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
+            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
                             '#551010', '#671E1E', 'rgb(235, 235, 235)');
             break;
         case 3:
@@ -86,27 +86,27 @@ const changeYear = (year) => {
                             '#0B1643', '#212D5E', 'rgb(235, 235, 235)')
             break;
         case 4:
-            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
+            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
                             '#15400C', '#24501B', 'rgb(235, 235, 235)')
             break;
         case 5:
-            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
+            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
                             '#3E0D43', '#4C1C51', 'rgb(235, 235, 235)')
             break;
         case 6:
-            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
+            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
                             '#484009', '#5C5418', 'rgb(235, 235, 235)')
             break;
         case 7:
-            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
+            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
                             '#0A4948', '#155554', 'rgb(235, 235, 235)')
             break;
         case 8:
-            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
+            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
                             '#441A0A', '#512717', 'rgb(235, 235, 235)')
             break;
         case 9:
-            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent (1).png', 
+            changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
                             '#240B3F', '#351755', 'rgb(235, 235, 235)')
             break;
         case 10:
@@ -138,7 +138,9 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
     const rankingsPanel = document.querySelector('.rankings-panel');
     const punishmentTitle = document.querySelector('.punishment-title');
     const leagueTypeTitle = document.querySelector('.league-type-title');
+    const categoryContainers = document.querySelectorAll('.color-container');
     const everything = document.querySelectorAll('*');
+
 
     logo.src = url;
     yearsPanel.style.backgroundColor = sidePanelColor;
@@ -148,6 +150,9 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
     everything.forEach(function(thing) {
         thing.style.color = textColor;
     });
+    categoryContainers.forEach(function(thing) {
+        thing.style.color = sidePanelColor;
+    })
     punishmentTitle.style.color = 'rgb(33, 33, 33)';
     leagueTypeTitle.style.color = 'rgb(33, 33, 33)';
 

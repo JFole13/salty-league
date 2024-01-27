@@ -134,7 +134,7 @@ updateRanks();
 for (let i = 1; i < 15; i++) {
     updateWeek(i);
 }
-//updateWeek(1);
+// updateWeek(1);
 updateYear();
 updateWinnerBracketPlacements();
 updateLoserBracketPlacements();

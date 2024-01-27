@@ -8,7 +8,7 @@ const unData = fs.readFileSync('./undefeated-test.json');
 const undefeatedData = JSON.parse(unData);
 
 
-// Call stack basically looks like 
+// Call stack for scoring basically looks like 
 // updateScoring()
 //      => fetch matchup data
 //          => saves json copy of the week (exportData())
