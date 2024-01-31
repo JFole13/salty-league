@@ -1,7 +1,7 @@
-const currentYear = 1;
+export const currentYear = 1;
 let currentWeek = 14;
 
-const fetchActivity = (year) => {
+export const fetchActivity = (year) => {
     fetch(`/activity/${year}`, {
         method: 'GET',
         headers: {
@@ -23,12 +23,7 @@ const populateActivity = (data) => {
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
 
-    console.log(data)
-
-
     let weekCounter = currentWeek;
-
-
 
     for (let i = 0; i < data.length; i++) {
         if(data[i].week == weekCounter) {
@@ -68,50 +63,68 @@ years.forEach(function(year) {
     });
 });
 
+const yearSelector = document.querySelector('.year-selector');
+
+yearSelector.addEventListener('change', function() {
+        const selectedYear = this.options[this.selectedIndex];
+        changeYear(selectedYear);
+});
+
 const changeYear = (year) => {
     const changingYear = extractNumberFromString(year.innerHTML);
 
     switch (changingYear) {
         case 1:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 'rgb(33, 33, 33)', 
-                            'rgb(52, 52, 52)', 'rgb(235, 235, 235)');
+                            'rgb(52, 52, 52)', 'images/salty-logos/png/salty-high-resolution-logo-transparent.png', 
+                            'rgb(235, 235, 235)');
             //changeLeagueType('Classic', 'classic-league', '/images/icons/american-football.png');
             break;
         case 2:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
-                            '#551010', '#671E1E', 'rgb(235, 235, 235)');
+                            '#551010', '#671E1E', 'images/salty-logos/png/salty-high-resolution-logo-white-transparent.png', 
+                            'rgb(235, 235, 235)');
+            //changeLeagueType('Vampire', 'vampire-league', '/images/icons/vampire.png');
             break;
         case 3:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 
-                            '#0B1643', '#212D5E', 'rgb(235, 235, 235)')
+                            '#0B1643', '#212D5E', 'images/salty-logos/png/salty-high-resolution-logo-transparent.png', 
+                            'rgb(235, 235, 235)');
             break;
         case 4:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
-                            '#15400C', '#24501B', 'rgb(235, 235, 235)')
+                            '#15400C', '#24501B', 'images/salty-logos/png/salty-high-resolution-logo-white-transparent.png', 
+                            'rgb(235, 235, 235)');
             break;
         case 5:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
-                            '#3E0D43', '#4C1C51', 'rgb(235, 235, 235)')
+                            '#3E0D43', '#4C1C51', 'images/salty-logos/png/salty-high-resolution-logo-white-transparent.png', 
+                            'rgb(235, 235, 235)');
             break;
         case 6:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
-                            '#484009', '#5C5418', 'rgb(235, 235, 235)')
+                            '#484009', '#5C5418', 'images/salty-logos/png/salty-high-resolution-logo-white-transparent.png', 
+                            'rgb(235, 235, 235)');
             break;
         case 7:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
-                            '#0A4948', '#155554', 'rgb(235, 235, 235)')
+                            '#0A4948', '#155554', 'images/salty-logos/png/salty-high-resolution-logo-white-transparent.png', 
+                            'rgb(235, 235, 235)');
             break;
         case 8:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
-                            '#441A0A', '#512717', 'rgb(235, 235, 235)')
+                            '#441A0A', '#512717', 'images/salty-logos/png/salty-high-resolution-logo-white-transparent.png', 
+                            'rgb(235, 235, 235)');
             break;
         case 9:
             changeYearColor('/images/salty-logos/png/salty-high-resolution-logo-white-transparent-1.png', 
-                            '#240B3F', '#351755', 'rgb(235, 235, 235)')
+                            '#240B3F', '#351755', 'images/salty-logos/png/salty-high-resolution-logo-white-transparent.png',
+                            'rgb(235, 235, 235)');
             break;
         case 10:
             changeYearColor('/images/salty-logos/png/logo-no-background.png', 'rgb(33, 33, 33)', 
-                            'rgb(52, 52, 52)', 'rgb(235, 235, 235)');
+                            'rgb(52, 52, 52)', 'images/salty-logos/png/salty-high-resolution-logo-transparent.png',
+                            'rgb(235, 235, 235)');
             break;
         default:
             day = "Invalid year";
@@ -130,9 +143,11 @@ function extractNumberFromString(inputString) {
     }
 }
 
-const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
+const changeYearColor = (url, sidePanelColor, mainPanelColor, responsiveUrl, textColor) => {
     const logo = document.querySelector('.logo');
+    const logoResponsive = document.querySelector('.logo-alternative');
     const yearsPanel = document.querySelector('.years-panel');
+    const yearsPanelReponsive = document.querySelector('.years-panel-responsive');
     const activityPanel = document.querySelector('.activity-panel');
     const activityTitles = document.querySelector('.activity-titles-container');
     const rankingsPanel = document.querySelector('.rankings-panel');
@@ -143,7 +158,9 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
 
 
     logo.src = url;
+    logoResponsive.src = responsiveUrl;
     yearsPanel.style.backgroundColor = sidePanelColor;
+    yearsPanelReponsive.style.backgroundColor = sidePanelColor;
     activityPanel.style.backgroundColor = mainPanelColor;
     activityTitles.style.backgroundColor = sidePanelColor;
     rankingsPanel.style.backgroundColor = sidePanelColor;
@@ -151,11 +168,10 @@ const changeYearColor = (url, sidePanelColor, mainPanelColor, textColor) => {
         thing.style.color = textColor;
     });
     categoryContainers.forEach(function(thing) {
-        thing.style.color = sidePanelColor;
+        thing.style.backgroundColor = sidePanelColor;
     })
     punishmentTitle.style.color = 'rgb(33, 33, 33)';
     leagueTypeTitle.style.color = 'rgb(33, 33, 33)';
-
 };
 
 const changeLeagueType = (leagueTypeText, leagueTypeClass, url) => {
@@ -217,7 +233,7 @@ const populateCurrentRankings = (data) => {
     })
 }
 
-const createCategoryContainer = (rules, url) => {
+export const createCategoryContainer = (rules, url) => {
     const categoryContainer = document.createElement('div');
     categoryContainer.classList.add('category-container');
 
@@ -240,7 +256,7 @@ const createCategoryContainer = (rules, url) => {
 }
 
 // Uncomment for when a punishment is decided 
-// document.querySelector('.punishment-title').addEventListener('click', openModal);
+//document.querySelector('.punishment-title').addEventListener('click', openModal);
 document.querySelector('.punishment-close-modal-btn').addEventListener('click', closeModal);
 
 function openModal() {

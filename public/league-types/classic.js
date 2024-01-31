@@ -1,12 +1,13 @@
-if(document.querySelector('.classic-league')) {
-    document.querySelector('.classic-league').addEventListener('click', () => {
+import { createCategoryContainer, currentYear, fetchActivity } from '../script.js';
+
+document.querySelector('.classic-league').addEventListener('click', () => {
+    if(document.querySelector('.classic-league') && !document.querySelector('.color-container')) {
         const weeklyCategoriesContainer = document.createElement('div');
         weeklyCategoriesContainer.classList.add('categories-container');
-    
-    
+
         const activityContainer = document.querySelector('.activity-container');
         activityContainer.innerHTML = '';
-    
+
         const description = document.createElement('p');
         description.classList.add('description-text');
         description.innerHTML = 'Classic scoring rules. The six teams with the best record make the playoffs.';
@@ -14,9 +15,9 @@ if(document.querySelector('.classic-league')) {
         const weeklyCategoriesTitle = document.createElement('h3');
         weeklyCategoriesTitle.classList.add('weekly-categories-title');
         weeklyCategoriesTitle.innerHTML = 'Weekly Categories';
-    
+
         activityContainer.append(description, weeklyCategoriesTitle, weeklyCategoriesContainer);
-    
+
         weeklyCategoriesContainer.append(createCategoryContainer('Win a Game (+5)', 'images/icons/trophy.png'));
         weeklyCategoriesContainer.append(createCategoryContainer('Score Above the Median (+3)', 'images/icons/average.png'));
         weeklyCategoriesContainer.append(createCategoryContainer('Highest Scorer (+3)', 'images/icons/number-one.png'));
@@ -52,5 +53,9 @@ if(document.querySelector('.classic-league')) {
         yearlyCategoriesContainer.append(createCategoryContainer('Eighth Place (+18)', 'images/icons/dead-fish.png'));
         yearlyCategoriesContainer.append(createCategoryContainer('Ninth Place (+15)', 'images/icons/trash-can.png'));
         yearlyCategoriesContainer.append(createCategoryContainer('Last Place (+13)', 'images/icons/poop.png'));
-    });
-}
+    } else {
+        const activityContainer = document.querySelector('.activity-container');
+        activityContainer.innerHTML = '';
+        fetchActivity(currentYear);
+    }
+});

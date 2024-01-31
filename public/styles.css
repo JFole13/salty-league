@@ -71,9 +71,11 @@
 }
 
 .avatar-img {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
 }
 
 .categories-container {
@@ -363,7 +365,22 @@
 
     .activity-title {
         font-size: 1.4rem;
-        margin: 1rem;
+        margin-left: 1rem;
+    }
+
+    .categories-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .category-rules-icon {
+        margin: 1rem 0 0.5rem;
+    }
+
+    .color-container {
+        min-width: 175px;
+        min-height: 175px;
+        text-align: center;
+        display: block;
     }
 
     .league-icon {
@@ -375,7 +392,8 @@
     }
     
     .league-type-title {
-        font-size: 0.75rem;
+        font-size: .75rem;
+        margin-right: 0.8rem;
     }
 
     .main-container {
