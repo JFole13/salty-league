@@ -368,6 +368,11 @@
         margin-left: 1rem;
     }
 
+    .avatar-img {
+        height: 50px;
+        width: 50px;
+    }
+
     .categories-container {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -398,6 +403,25 @@
 
     .main-container {
         flex-direction: column;
+    }
+
+    .punishment-title {
+        margin: 2rem auto;
+        font-size: 1.5rem;
+        width: 90%;
+        text-align: center;
+    }
+
+    .rank-name {
+        font-size: 1.3rem;
+    }
+
+    .rank-points {
+        font-size: 1.3rem;
+    }
+
+    .ranking-container {
+        margin: 0.6rem 0;
     }
 
     .rankings-panel {

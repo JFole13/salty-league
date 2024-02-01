@@ -256,7 +256,7 @@ export const createCategoryContainer = (rules, url) => {
 }
 
 // Uncomment for when a punishment is decided 
-//document.querySelector('.punishment-title').addEventListener('click', openModal);
+document.querySelector('.punishment-title').addEventListener('click', openModal);
 document.querySelector('.punishment-close-modal-btn').addEventListener('click', closeModal);
 
 function openModal() {
