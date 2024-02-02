@@ -109,7 +109,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 275px;
+    /* min-width: 275px; */
+    width: 275px;
 }
 
 .description-text {
@@ -336,7 +337,6 @@
     height: 30px;
     border-radius: 0;
     font-size: 1.1rem;
-
 }
 
 .year-selector option {
@@ -382,8 +382,8 @@
     }
 
     .color-container {
-        min-width: 175px;
-        min-height: 175px;
+        width: 175px;
+        height: 175px;
         text-align: center;
         display: block;
     }
@@ -447,35 +447,199 @@
 
 
 @media screen and (min-width: 426px) and (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
-    }
-
-    .years-panel {
-        display: none;
-    }
-
     .activity-panel {
         width: 100%;
     }
 
+    .avatar-img {
+        height: 50px;
+        width: 50px;
+    }
+
+    .categories-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .main-container {
+        flex-direction: column;
+    }
+
+    .punishment-title {
+        margin: 2rem auto;
+        font-size: 1.5rem;
+        width: 40%;
+        text-align: center;
+    }
+
     .rankings-panel {
         width: 100%;
+    }
+
+    .rank-name {
+        font-size: 1.5rem;
+    }
+
+    .rank-points {
+        font-size: 1.5rem;
+    }
+
+    .rankings-title {
+        align-self: start;
+        margin: 1rem 2.5rem;
+    }
+
+    .years-panel {
+        display: none;
     }
 }
 
 /*----------------------------------------------------- Tablet (Portrait) -----------------------------------------------------*/
 
 @media screen and (min-width: 769px) and (max-width: 1024px) {
+    .activity-container {
+        margin: 1rem;
+    }
+
+    .activity-icon {
+        height: 50px;
+        width: 50px;
+    }
+
+    .activity-panel {
+        width: 100%;
+        min-height: 600px;
+    }
+
+    .activity-tag {
+        font-size: 1.3rem;
+        margin: 1.5rem;
+    }
+
+    .activity-title {
+        font-size: 1.8rem;
+        margin-left: 1rem;
+    }
+
+    .activity-week-title {
+        font-size: 1.5rem;
+    }
+
+    .avatar-img {
+        height: 60px;
+        width: 60px;
+    }
+
+    .categories-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .category-rules-icon {
+        margin: 1rem 0 0.5rem;
+    }
+
+    .color-container {
+        width: 175px;
+        height: 175px;
+        text-align: center;
+        display: block;
+    }
+
+    .description-text {
+        font-size: 1.2rem;
+    }
+
+    .league-icon {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 2px solid rgb(33, 33, 33);
+        margin-left: 0.4rem;
+    }
+    
+    .league-type-title {
+        font-size: 1.5rem;
+        margin-right: 1.5rem;
+    }
+
+    .logo-alternative {
+        width: 300px;
+        height: 71px;
+        margin: 1rem;
+    }
+
+    .main-container {
+        flex-direction: column;
+    }
+
+    .punishment-title {
+        margin: 2rem auto;
+        font-size: 1.5rem;
+        width: 40%;
+        text-align: center;
+    }
+
+    .rank-name {
+        font-size: 1.7rem;
+    }
+
+    .rank-points {
+        font-size: 1.7rem;
+    }
+
+    .ranking-container {
+        margin: 0.6rem 0;
+    }
+
+    .rankings-panel {
+        width: 100%;
+        align-items: start;
+    }
+
+    .rankings-title {
+        margin: 1rem;
+        font-size: 1.8rem;
+    }
+
+    .weekly-categories-title {
+        font-size: 1.4rem;
+    }
+
+    .year-selector {
+        margin: 1rem;
+        background-color: rgb(52, 52, 52);
+        height: 50px;
+        font-size: 1.3rem;
+    }
+
+    .yearly-categories-title {
+        font-size: 1.4rem;
+    }
+
     .years-panel {
         display: none;
+    }
+
+    .years-panel-responsive {
+        display: flex;
     }
 }
 
 /*----------------------------------------------------- Tablet (Landscape) -----------------------------------------------------*/
 
 @media screen and (min-width: 1025px) and (max-width: 1325px) {
-    .years-panel {
+    .categories-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rankings-panel{
+        width: 22%;
+    }
+
+    .rankings-title {
+        font-size: 1.3rem;
+    }
+
+    .years-panel-responsive {
         display: none;
     }
 }
