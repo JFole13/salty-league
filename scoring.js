@@ -9,15 +9,12 @@ const undefeatedData = JSON.parse(unData);
 
 
 // Call stack for scoring basically looks like 
-// updateScoring()
+// updateWeekScoring()
 //      => fetch matchup data
 //          => saves json copy of the week (exportData())
 //          => calls points category to add (add<Category>())
 //               => posts log log for category 
 //          => fetch update to players total points
-
-// at some point might need to break up scoring methods in different modules
-// hard code roster_id = user_id ([1 : 898409328094803])
 
 // put points to add in pointsStorage, index is relative to roster_id
 let pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -88,33 +85,38 @@ export const updateWeek = async (week) => {
             playerNames.push(playersData[i].team_name);
         }
 
-        updateScoring(playersData, week);
+        updateWeekScoring(playersData, week);
     } catch (error) {
         console.log('Error getting players: ', error);
     }
 }
 
-export const updateYear = () => {
-    fetch('https://api.sleeper.app/v1/league/995196431700942848/rosters', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        addUndefeatedPoints(data);
-        addLongestStreakPoints(data);
-        addMostPointsForPoints(data);
-        addMostPointsAgainstPoints(data);
-    })
-    .catch(error => {
-        console.error('Error getting year stats:', error);
-    })
+export const updateYear = async () => {
+    try {
+        const response = await fetch('http://192.168.1.121:3000/players', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const data = await response.json();
+
+        const playersData = data.sort((a, b) => a.roster_id - b.roster_id);
+
+        for (let i = 0; i < playersData.length; i++) {
+            playerNames.push(playersData[i].team_name);
+        }
+
+        updateYearScoring(playersData);
+    } catch (error) {
+        console.log('Error getting players: ', error);
+    }
 }
 
-export const updateWinnerBracketPlacements = () => {
-    fetch('https://api.sleeper.app/v1/league/995196431700942848/winners_bracket', {
+export const updateWinnerBracketPlacements = (data) => {
+    const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/winners_bracket';
+    fetch(sleeperUrl, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -127,10 +129,12 @@ export const updateWinnerBracketPlacements = () => {
     .catch(error => {
         console.error('Error getting year stats:', error);
     })
+    //addWinnerBracketPlacementsPointsTest(data);
 }
 
-export const updateLoserBracketPlacements = () => {
-    fetch('https://api.sleeper.app/v1/league/995196431700942848/losers_bracket', {
+export const updateLoserBracketPlacements = (data) => {
+    const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/losers_bracket';
+    fetch(sleeperUrl, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -143,9 +147,10 @@ export const updateLoserBracketPlacements = () => {
     .catch(error => {
         console.error('Error getting year stats:', error);
     })
+    //addLoserBracketPlacementsPointsTest(data);
 }
 
-export const updateScoring = (playersData, week) => {
+const updateWeekScoring = (playersData, week) => {
     fetch(`https://api.sleeper.app/v1/league/995196431700942848/matchups/${week}`, {
         method: 'GET',
         headers: {
@@ -167,7 +172,26 @@ export const updateScoring = (playersData, week) => {
         currentWeek++;
     })
     .catch(error => {
-        console.error('Error getting matchups:', error);
+        console.error('Error updating week scoring:', error);
+    })
+}
+
+const updateYearScoring = () => {
+    fetch('https://api.sleeper.app/v1/league/995196431700942848/rosters', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        addUndefeatedPoints(data);
+        addLongestStreakPoints(data);
+        addMostPointsForPoints(data);
+        addMostPointsAgainstPoints(data);
+    })
+    .catch(error => {
+        console.error('Error updating year stats:', error);
     })
 }
 
@@ -352,6 +376,34 @@ const addLoserBracketPlacementsPoints = (data) => {
     const eighthPlaceTeam = data[3].w;
     const ninthPlaceTeam = data[2].l;
     const tenthPlaceTeam = data[2].w;
+
+    let log = `${playerNames[seventhPlaceTeam - 1]} finished in seventh place (+21)`;
+    updateActivity(log, 'loser.png');
+    log = `${playerNames[eighthPlaceTeam - 1]} finished in eighth place (+18)`;
+    updateActivity(log, 'dead-fish.png');
+    log = `${playerNames[ninthPlaceTeam - 1]} finished in ninth place (+15)`;
+    updateActivity(log, 'trash-can.png');
+    log = `${playerNames[tenthPlaceTeam - 1]} finished in tenth place (+13)`;
+    updateActivity(log, 'poop.png');
+
+    pointsStorage[seventhPlaceTeam - 1] = seventhPlacePoints;
+    pointsStorage[eighthPlaceTeam - 1] = eighthPlacePoints;
+    pointsStorage[ninthPlaceTeam - 1] = ninthPlacePoints;
+    pointsStorage[tenthPlaceTeam - 1] = tenthPlacePoints;
+
+    updateTotalPoints();
+}
+
+const addLoserBracketPlacementsPointsTest = (data) => {
+    const seventhPlacePoints = 21;
+    const eighthPlacePoints = 18;
+    const ninthPlacePoints = 15;
+    const tenthPlacePoints = 13;
+
+    const seventhPlaceTeam = data[3].seventhPlace;
+    const eighthPlaceTeam = data[3].eighthPlace;
+    const ninthPlaceTeam = data[2].ninthPlace;
+    const tenthPlaceTeam = data[2].tenthPlace;
 
     let log = `${playerNames[seventhPlaceTeam - 1]} finished in seventh place (+21)`;
     updateActivity(log, 'loser.png');
@@ -577,10 +629,6 @@ const addWinnerBracketPlacementsPoints = (data) => {
     const fourthPlacePoints = 30;
     const fifthPlacePoints = 27;
     const sixthPlacePoints = 24;
-    // const seventhPlacePoints = 21;
-    // const eighthPlacePoints = 18;
-    // const ninthPlacePoints = 15;
-    // const tenthPlacePoints = 13;
 
     const firstPlaceTeam = data[5].w;
     const secondPlaceTeam = data[5].l;
@@ -588,6 +636,44 @@ const addWinnerBracketPlacementsPoints = (data) => {
     const fourthPlaceTeam = data[6].l;
     const fifthPlaceTeam = data[4].w;
     const sixthPlaceTeam = data[4].l;
+
+    let log = `${playerNames[firstPlaceTeam - 1]} finished in first place (+100)`;
+    updateActivity(log, 'crown.png');
+    log = `${playerNames[secondPlaceTeam - 1]} finished in second place (+70)`;
+    updateActivity(log, 'second-prize.png');
+    log = `${playerNames[thirdPlaceTeam - 1]} finished in third place (+50)`;
+    updateActivity(log, 'third-prize.png');
+    log = `${playerNames[fourthPlaceTeam - 1]} finished in fourth place (+30)`;
+    updateActivity(log, 'thumb-up.png');
+    log = `${playerNames[fifthPlaceTeam - 1]} finished in fifth place (+27)`;
+    updateActivity(log, 'mid.png');
+    log = `${playerNames[sixthPlaceTeam - 1]} finished in sixth place (+24)`;
+    updateActivity(log, 'open-mouth.png');
+
+    pointsStorage[firstPlaceTeam - 1] = firstPlacePoints;
+    pointsStorage[secondPlaceTeam - 1] = secondPlacePoints;
+    pointsStorage[thirdPlaceTeam - 1] = thirdPlacePoints;
+    pointsStorage[fourthPlaceTeam - 1] = fourthPlacePoints;
+    pointsStorage[fifthPlaceTeam - 1] = fifthPlacePoints;
+    pointsStorage[sixthPlaceTeam - 1] = sixthPlacePoints;
+
+    updateTotalPoints();
+}
+
+const addWinnerBracketPlacementsPointsTest = (data) => {
+    const firstPlacePoints = 100;
+    const secondPlacePoints = 70;
+    const thirdPlacePoints = 50;
+    const fourthPlacePoints = 30;
+    const fifthPlacePoints = 27;
+    const sixthPlacePoints = 24;
+
+    const firstPlaceTeam = data[5].firstPlace;
+    const secondPlaceTeam = data[5].secondPlace;
+    const thirdPlaceTeam = data[6].thirdPlace;
+    const fourthPlaceTeam = data[6].fourthPlace;
+    const fifthPlaceTeam = data[4].fifthPlace;
+    const sixthPlaceTeam = data[4].sixthPlace;
 
     let log = `${playerNames[firstPlaceTeam - 1]} finished in first place (+100)`;
     updateActivity(log, 'crown.png');

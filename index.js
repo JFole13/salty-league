@@ -1,9 +1,14 @@
-import express from 'express';
 import bodyParser from 'body-parser';
+import express from 'express';
+import fs from 'fs';
 import pkg from 'pg'
 import schedule from 'node-schedule';
+
 import { updateWinnerBracketPlacements, updateLoserBracketPlacements, updateRanks, updateWeek, updateYear } from './scoring.js';
 const { Client } = pkg;
+
+const year1Data = fs.readFileSync('./year1Test.json');
+
 
 const client = new Client({
     user: 'postgres',
@@ -41,21 +46,43 @@ app.get('/activity', async (req, res) => {
 app.get('/activity/:year', async (req, res) => {
     try {
         const year = req.params.year;
-        const query = `SELECT * FROM activity WHERE year = ${year}`;
+        const query = `SELECT * FROM activity WHERE year = $1`;
 
-        const result = await client.query(query);
-
+        const values = [year];
+        const result = await client.query(query, values);
         res.json(result.rows);
     } catch (error) {
         console.error('Error getting activity: ', error)
     }
 });
 
+app.get('/activity/player/:player/:year', async (req, res) => {
+    try {
+        const player = req.params.player;
+        const year = req.params.year;
+        const query = `SELECT * FROM activity WHERE year = $1`;
+
+        const values = [year];
+        const result = await client.query(query, values);
+
+        let filteredRows = [];
+        for(let i = 0; i < result.rows.length; i++) {
+            if (result.rows[i].log.includes(player)) {
+                filteredRows.push(result.rows[i]);
+            }
+        }
+        res.json(filteredRows);
+    } catch (error) {
+        console.error('Error getting activity: ', error);
+        res.status(500).send('Server error');
+    }
+});
+
 app.post('/activity', async (req, res) => {
     try {
         const { log, year, icon_path, week } = req.body;
-
         const query = `INSERT INTO activity (log, year, icon_path, week) VALUES ($1, $2, $3, $4)`;
+
         const values = [log, year, icon_path, week];
         await client.query(query, values);
         res.json({ log: 'New Activity Posted' });
@@ -115,29 +142,51 @@ app.get('/players', async (req, res) => {
 // if (port == null || port == "") {
 //   port = 8000;
 // }
-const port = 3000;
 
 app.listen(3000, '192.168.1.121', () => {
   console.log(`Server is running at http://192.168.1.121:3000`);
 });
 
+// const port = 3000;
 // app.listen(port, () => {
 //     console.log(`Example app listening on port ${port}`)
 // })
 
-const rule = new schedule.RecurrenceRule();
-rule.dayOfWeek = 3;
-rule.hour = 20;
-rule.minute = 13;
+let currentWeek = 1;
 
-updateRanks();
-for (let i = 1; i < 15; i++) {
-    updateWeek(i);
+const updateSalty = () => {
+    updateRanks();
+
+    // if(currentWeek < 15){
+    //     updateWeek(currentWeek);
+    //     currentWeek++;
+    // } 
+
+        // updateRanks();
+    for (let i = 1; i < 15; i++) {
+        updateWeek(i);
+    }
+    //updateWeek(1);
+    updateYear();
+    updateWinnerBracketPlacements();
+    updateLoserBracketPlacements();
+    // end of the year
 }
-// updateWeek(1);
-updateYear();
-updateWinnerBracketPlacements();
-updateLoserBracketPlacements();
 
+const tenYearSimulation = () => {
+    for(let i = 0; i < 1; i++) {
+        for (let j = 0; j < 15; j++) {
+            updateWeek(j);
+        }
 
-//const job = schedule.scheduleJob(rule, updateScoring);
+        updateYear();
+        updateWinnerBracketPlacements(year1Data);
+        updateLoserBracketPlacements(year1Data);
+    }
+}
+
+updateSalty();
+//tenYearSimulation();
+
+// CRON string reads 'on Tuesdays (2) at 12:00 (0, 12) on any day of the month (first *) and any month (second *)'
+// const job = schedule.scheduleJob('0 12 * * 2', updateSalty);

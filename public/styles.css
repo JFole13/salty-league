@@ -12,6 +12,24 @@
     margin: 1rem 2.5rem 0.75rem;
 }
 
+.activity-filter-container {
+    position: sticky;
+    background-color: rgb(33, 33, 33);
+    z-index: 1;
+    display: flex;
+}
+
+.activity-filter-options {
+    margin-bottom: 1rem;
+    background-color:rgb(33, 33, 33);
+    font-size: 1rem;
+    border: none;
+}
+
+.activity-filter-text {
+    margin: 0 1rem 1rem 2.5rem;
+}
+
 .activity-icon {
     display: inline-block;
     height: 30px;
@@ -39,7 +57,7 @@
 
 .activity-titles-container {
     position: sticky;
-    top: 0;
+    top: 0px;
     background-color: rgb(33, 33, 33);
     z-index: 1;
     display: flex;
@@ -629,6 +647,10 @@
 @media screen and (min-width: 1025px) and (max-width: 1325px) {
     .categories-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rank-name {
+        font-size: 1rem;
     }
 
     .rankings-panel{

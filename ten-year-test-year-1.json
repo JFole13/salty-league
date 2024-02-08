@@ -1,0 +1,232 @@
+[
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+        },
+        "roster_id": 1,
+        "owner_id": "873050974040858624",
+        "metadata": {
+        "streak": "1W",
+        "record": "LWWWLWWLWWLLLW"
+        },
+        "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 2,
+            "owner_id": "996166213850025984",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 3,
+            "owner_id": "993589595965009920",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 4,
+            "owner_id": "996218321945210880",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 5,
+            "owner_id": "996220940348493824",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 6,
+            "owner_id": "996227373119053824",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 7,
+            "owner_id": "996474117790580736",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 8,
+            "owner_id": "885738350601113600",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 9,
+            "owner_id": "996475917918797824",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    },
+    {
+        "settings": {
+            "wins": 8,
+            "waiver_position": 6,
+            "waiver_budget_used": 0,
+            "total_moves": 0,
+            "ties": 0,
+            "ppts_decimal": 8,
+            "ppts": 2204,
+            "losses": 6,
+            "fpts_decimal": 22,
+            "fpts_against_decimal": 56,
+            "fpts_against": 1920,
+            "fpts": 1931
+            },
+            "roster_id": 10,
+            "owner_id": "996862733326831616",
+            "metadata": {
+            "streak": "1W",
+            "record": "LWWWLWWLWWLLLW"
+            },
+            "league_id": "995196431700942848"
+    }
+]

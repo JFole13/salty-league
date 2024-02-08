@@ -1,8 +1,23 @@
 export const currentYear = 1;
-let currentWeek = 14;
 
 export const fetchActivity = (year) => {
     fetch(`/activity/${year}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then (response => response.json())
+    .then (data => {
+        populateActivity(data);
+    })
+    .catch (error => {
+        console.error('Error fetching activity: ' + error);
+    })
+};
+
+const fetchActivityFiltered = (name, year) => {
+    fetch(`/activity/player/${name}/${year}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -23,7 +38,9 @@ const populateActivity = (data) => {
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
 
-    let weekCounter = currentWeek;
+    // gets biggest week from the sorted data (which would be the first result) and then that's used for
+    // the week dividers
+    let weekCounter = data[0].week;
 
     for (let i = 0; i < data.length; i++) {
         if(data[i].week == weekCounter) {
@@ -52,6 +69,30 @@ const populateActivity = (data) => {
 
     console.log(data)
 };
+
+const populateActivityFilters = (data) => {
+    data = data.sort((a, b) => a.team_name.localeCompare(b.team_name));
+    console.log(data);
+
+    const activityFilter = document.querySelector('.activity-filter-options');
+    const activityFilterOptions = activityFilter.querySelectorAll('option');
+
+    for (let i = 1; i < activityFilterOptions.length; i++) {
+        activityFilterOptions[i].innerHTML = data[i - 1].team_name;
+        activityFilterOptions[i].value = "option" + (i + 1);
+    }
+}
+
+document.querySelector('.activity-filter-options').addEventListener('change', function () {
+    const selectedIndex = this.selectedIndex;
+    const selectedOptionText = this.options[selectedIndex].innerHTML;
+
+    if(selectedIndex == 0) {
+        fetchActivity(currentYear);
+    } else {
+        fetchActivityFiltered(selectedOptionText, currentYear);
+    }
+})
 
 fetchActivity(currentYear);
 
@@ -197,6 +238,7 @@ const fetchCurrentRankings = () => {
     .then (response => response.json())
     .then (data => {
         populateCurrentRankings(data);
+        populateActivityFilters(data);
     })
     .catch (error => {
         console.error('Error fetching rankings:' + error);

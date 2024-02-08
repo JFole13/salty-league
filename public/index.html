@@ -44,6 +44,22 @@
                 <h3 class="activity-title">Recent Activity</h3>
                 <h4 class="league-type-title classic-league">Undecided<img class="league-icon" src="images/icons/question.png"></img></h4>
             </div>
+            <div class="activity-filter-container">
+                <label class="activity-filter-text" for="filterOptions">Filter by:</label>
+                <select class="activity-filter-options" id="filterOptions">
+                    <option value="option1">All</option>
+                    <option value="option2"></option>
+                    <option value="option3"></option>
+                    <option value="option4"></option>
+                    <option value="option5"></option>
+                    <option value="option6"></option>
+                    <option value="option7"></option>
+                    <option value="option8"></option>
+                    <option value="option9"></option>
+                    <option value="option10"></option>
+                    <option value="option11"></option>
+                </select>
+            </div>
             <div class="activity-container">
                 
             </div>
@@ -152,5 +168,17 @@
       </div>
     <script type="module" src="script.js"></script>
     <script type="module" src="league-types/classic.js"></script>
+    <script>
+        function updateFilterContainerTop() {
+          var titlesContainer = document.querySelector('.activity-titles-container');
+          var titlesContainerHeight = titlesContainer.offsetHeight - 1;
+        
+          var filterContainer = document.querySelector('.activity-filter-container');
+          filterContainer.style.top = titlesContainerHeight + 'px';
+        }
+        
+        document.addEventListener('DOMContentLoaded', updateFilterContainerTop);
+        window.addEventListener('resize', updateFilterContainerTop);
+    </script>
 </body>
 </html>
