@@ -16,8 +16,10 @@ export const fetchActivity = (year) => {
     })
 };
 
-const fetchActivityFiltered = (name, year) => {
-    fetch(`/activity/player/${name}/${year}`, {
+const fetchActivityFiltered = async (name, year) => {
+    let userID = await getUserID(name);
+
+    fetch(`/activity/player/${userID}/${year}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -28,12 +30,28 @@ const fetchActivityFiltered = (name, year) => {
         populateActivity(data);
     })
     .catch (error => {
-        console.error('Error fetching activity: ' + error);
+        console.error('Error fetching filtered activity: ' + error);
     })
 };
 
+const getUserID = async (name) => {
+    try {
+        const response = await fetch(`/players/${name}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        const data = await response.json();
+        return data[0].user_id;
+    } catch (error) {
+        console.error('Error fetching user id: ' + error);
+    }
+}
+
 const populateActivity = (data) => {
-    data = data.sort((a, b) => b.week - a.week);
+    data = data.sort((a, b) => b.week - a.week); 
+    console.log(data)
 
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
@@ -66,13 +84,10 @@ const populateActivity = (data) => {
         activityTagContainer.append(activityTag);
         activityContainer.append(activityTagContainer);
     }
-
-    console.log(data)
 };
 
 const populateActivityFilters = (data) => {
     data = data.sort((a, b) => a.team_name.localeCompare(b.team_name));
-    console.log(data);
 
     const activityFilter = document.querySelector('.activity-filter-options');
     const activityFilterOptions = activityFilter.querySelectorAll('option');

@@ -4,7 +4,7 @@ import fs from 'fs';
 import pkg from 'pg'
 import schedule from 'node-schedule';
 
-import { updateWinnerBracketPlacements, updateLoserBracketPlacements, updateRanks, updateWeek, updateYear } from './scoring.js';
+import { updateWinnerBracketPlacements, updateLoserBracketPlacements, updateRanks, updateWeekScoring, updateYear } from './scoring.js';
 const { Client } = pkg;
 
 const year1Data = fs.readFileSync('./year1Test.json');
@@ -56,34 +56,42 @@ app.get('/activity/:year', async (req, res) => {
     }
 });
 
-app.get('/activity/player/:player/:year', async (req, res) => {
+app.get('/activity/player/:id/:year', async (req, res) => {
     try {
-        const player = req.params.player;
+        const id = req.params.id;
         const year = req.params.year;
-        const query = `SELECT * FROM activity WHERE year = $1`;
+        const query = `SELECT * FROM activity WHERE user_id = $1 AND year = $2`;
 
-        const values = [year];
+        const values = [id, year];
         const result = await client.query(query, values);
 
-        let filteredRows = [];
-        for(let i = 0; i < result.rows.length; i++) {
-            if (result.rows[i].log.includes(player)) {
-                filteredRows.push(result.rows[i]);
-            }
-        }
-        res.json(filteredRows);
+        res.json(result.rows);
     } catch (error) {
         console.error('Error getting activity: ', error);
         res.status(500).send('Server error');
     }
 });
 
+app.get('/players/:name', async (req, res) => {
+    try {
+        const name = req.params.name;
+        const query = 'SELECT user_id FROM players WHERE team_name = $1';
+        
+        const values = [name];
+        const result = await client.query(query, values);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching players:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
 app.post('/activity', async (req, res) => {
     try {
-        const { log, year, icon_path, week } = req.body;
-        const query = `INSERT INTO activity (log, year, icon_path, week) VALUES ($1, $2, $3, $4)`;
+        const { log, year, icon_path, week, user_id } = req.body;
+        const query = `INSERT INTO activity (log, year, icon_path, week, user_id) VALUES ($1, $2, $3, $4, $5)`;
 
-        const values = [log, year, icon_path, week];
+        const values = [log, year, icon_path, week, user_id];
         await client.query(query, values);
         res.json({ log: 'New Activity Posted' });
     } catch (error) {
@@ -157,19 +165,17 @@ let currentWeek = 1;
 const updateSalty = () => {
     updateRanks();
 
-    // if(currentWeek < 15){
-    //     updateWeek(currentWeek);
-    //     currentWeek++;
-    // } 
 
-        // updateRanks();
-    for (let i = 1; i < 15; i++) {
-        updateWeek(i);
-    }
-    //updateWeek(1);
-    updateYear();
-    updateWinnerBracketPlacements();
-    updateLoserBracketPlacements();
+    (async () => {
+        for (let i = 1; i < 15; i++) {
+            await updateWeekScoring(i);
+        }
+    })();
+    // updateWeek(1);
+    // updateWeek(2);
+    // updateYear();
+    // updateWinnerBracketPlacements();
+    // updateLoserBracketPlacements();
     // end of the year
 }
 

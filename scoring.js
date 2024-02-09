@@ -68,28 +68,52 @@ export const updateRanks = async () => {
 }
 
 
-export const updateWeek = async (week) => {
-    try {
-        const response = await fetch('http://192.168.1.121:3000/players', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
+// export const updateWeek = async (week) => {
+//     try {
+//         const response = await fetch('http://192.168.1.121:3000/players', {
+//             method: 'GET',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//         });
 
-        const data = await response.json();
+//         const data = await response.json();
 
-        const playersData = data.sort((a, b) => a.roster_id - b.roster_id);
+//         const playersData = data.sort((a, b) => a.roster_id - b.roster_id);
 
-        for (let i = 0; i < playersData.length; i++) {
-            playerNames.push(playersData[i].team_name);
-        }
+//         for (let i = 0; i < playersData.length; i++) {
+//             playerNames.push(playersData[i].team_name);
+//         }
 
-        updateWeekScoring(playersData, week);
-    } catch (error) {
-        console.log('Error getting players: ', error);
-    }
-}
+//         updateWeekScoring(playersData, week);
+
+//     } catch (error) {
+//         console.log('Error getting players: ', error);
+//     }
+// }
+
+// export const updateWeek = (week) => {
+
+//      fetch(`http://192.168.1.121:3000/players`, {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         const playersData = data.sort((a, b) => a.roster_id - b.roster_id);
+
+//         for (let i = 0; i < playersData.length; i++) {
+//             playerNames.push(playersData[i].team_name);
+//         }
+
+//         updateWeekScoring(playersData, week);
+//     })
+//     .catch(error => {
+//         console.error('Error getting year stats:', error);
+//     })
+// }
 
 export const updateYear = async () => {
     try {
@@ -114,7 +138,11 @@ export const updateYear = async () => {
     }
 }
 
-export const updateWinnerBracketPlacements = (data) => {
+export const updateWinnerBracketPlacements = async (data) => {
+
+    // quick fix
+    let playersData = await getPlayerData();
+
     const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/winners_bracket';
     fetch(sleeperUrl, {
         method: 'GET',
@@ -124,7 +152,7 @@ export const updateWinnerBracketPlacements = (data) => {
     })
     .then(response => response.json())
     .then(data => {
-        addWinnerBracketPlacementsPoints(data);
+        addWinnerBracketPlacementsPoints(data, playersData);
     })
     .catch(error => {
         console.error('Error getting year stats:', error);
@@ -132,7 +160,9 @@ export const updateWinnerBracketPlacements = (data) => {
     //addWinnerBracketPlacementsPointsTest(data);
 }
 
-export const updateLoserBracketPlacements = (data) => {
+export const updateLoserBracketPlacements = async (data) => {
+    let playersData = await getPlayerData();
+
     const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/losers_bracket';
     fetch(sleeperUrl, {
         method: 'GET',
@@ -142,7 +172,7 @@ export const updateLoserBracketPlacements = (data) => {
     })
     .then(response => response.json())
     .then(data => {
-        addLoserBracketPlacementsPoints(data);
+        addLoserBracketPlacementsPoints(data, playersData);
     })
     .catch(error => {
         console.error('Error getting year stats:', error);
@@ -150,33 +180,16 @@ export const updateLoserBracketPlacements = (data) => {
     //addLoserBracketPlacementsPointsTest(data);
 }
 
-const updateWeekScoring = (playersData, week) => {
-    fetch(`https://api.sleeper.app/v1/league/995196431700942848/matchups/${week}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        exportData(data);
-        addHighestScorerPoints(data);
-        addHighestPlayerPoints(data);
-        addBlowoutPoints(data, week);
-        addHighestPointsInLossPoints(data);
-        addTopGuyTakedownPoints(data, playersData);
-        addRivalPoints(data, playersData);
-        addUpsetPoints(data, playersData);
-        addMedianPoints(data);
-        addWinWeekPoints(data);
-        currentWeek++;
-    })
-    .catch(error => {
-        console.error('Error updating week scoring:', error);
-    })
-}
+export const updateWeekScoring = async (week) => {
+    const playersData = await getPlayerData();
+    const matchupsData = await getMatchupsData(week);
+        
+    exportData(matchupsData);
+    addHighestScorerPoints(matchupsData, playersData, week);
+    currentWeek++;
+};
 
-const updateYearScoring = () => {
+const updateYearScoring = (playersData) => {
     fetch('https://api.sleeper.app/v1/league/995196431700942848/rosters', {
         method: 'GET',
         headers: {
@@ -185,10 +198,10 @@ const updateYearScoring = () => {
     })
     .then(response => response.json())
     .then(data => {
-        addUndefeatedPoints(data);
-        addLongestStreakPoints(data);
-        addMostPointsForPoints(data);
-        addMostPointsAgainstPoints(data);
+        addUndefeatedPoints(data, playersData);
+        addLongestStreakPoints(data, playersData);
+        addMostPointsForPoints(data, playersData);
+        addMostPointsAgainstPoints(data, playersData);
     })
     .catch(error => {
         console.error('Error updating year stats:', error);
@@ -202,7 +215,7 @@ const exportData = (data) => {
             if (err) {
                 console.error('Error writing to file:', err);
             } else {
-                console.log('Week Saved');
+                //console.log('Week Saved');
             }
         });
     } catch (error) {
@@ -210,7 +223,7 @@ const exportData = (data) => {
     }
 }
 
-const addBlowoutPoints = (data, week) => {
+const addBlowoutPoints = async (data, playersData) => {
     const plusPoints = 2;
 
     const matchups = [[],[],[],[],[]];
@@ -240,12 +253,12 @@ const addBlowoutPoints = (data, week) => {
 
     pointsStorage[biggestBlowoutTeam - 1] = plusPoints;
     let log = `${playerNames[biggestBlowoutTeam - 1]} had the biggest blowout win (+2)`;
-
-    updateActivity(log, 'nuclear-explosion.png');
-    updateTotalPoints();
+    let userID = playersData[biggestBlowoutTeam - 1].user_id;
+    await updateActivity(log, 'nuclear-explosion.png', userID);
+    await updateTotalPoints();
 }
 
-const addHighestPlayerPoints = (data) => {
+const addHighestPlayerPoints = async (data, playersData) => {
     const plusPoints = 3;
 
     let highestScorer = 0;
@@ -262,11 +275,12 @@ const addHighestPlayerPoints = (data) => {
 
     pointsStorage[teamWithHighestScorer - 1] = plusPoints;
     let log = `${playerNames[teamWithHighestScorer - 1]} had the highest scoring player (+3)`;
-    updateActivity(log, 'favorites.png');
-    updateTotalPoints();
+    let userID = playersData[teamWithHighestScorer - 1].user_id;
+    await updateActivity(log, 'favorites.png', userID);
+    await updateTotalPoints();
 }
 
-const addHighestPointsInLossPoints = (data) => {
+const addHighestPointsInLossPoints = async (data, playersData) => {
     const plusPoints = 2;
 
     const matchups = [[],[],[],[],[]];
@@ -299,31 +313,24 @@ const addHighestPointsInLossPoints = (data) => {
 
     pointsStorage[highestLosingPointsTeam - 1] = plusPoints;
     let log = `${playerNames[highestLosingPointsTeam - 1]} had the highest points in a loss (+2)`;
-
-    updateActivity(log, 'broken-heart.png');
-    updateTotalPoints();
+    let userID = playersData[highestLosingPointsTeam - 1].user_id;
+    await updateActivity(log, 'broken-heart.png', userID);
+    await updateTotalPoints();
 }
 
-const addHighestScorerPoints = (data) => {
+const addHighestScorerPoints = async (matchupsData, playersData) => {
     const plusPoints = 5;
-    const noPoints = 0;
 
-    const sortedData = data.sort((a, b) => b.points - a.points);
+    const sortedData = matchupsData.sort((a, b) => b.points - a.points);
 
-    for (let i = 0; i < sortedData.length; i++) {
-        if (i == 0) {
-            pointsStorage[sortedData[i].roster_id - 1] = plusPoints;
-            let log = `${playerNames[sortedData[i].roster_id - 1]} was the highest scorer (+5)`;
-            updateActivity(log, 'number-one.png');
-        } else {
-            pointsStorage[sortedData[i].roster_id - 1] = noPoints;
-        }
-    }
-
-    updateTotalPoints();
+    pointsStorage[sortedData[0].roster_id - 1] = plusPoints;
+    let log = `${playerNames[sortedData[0].roster_id - 1]} was the highest scorer (+5)`;
+    let userID = playersData[sortedData[0].roster_id - 1].user_id;
+    await updateActivity(log, 'number-one.png', userID);
+    await updateTotalPoints();
 }
 
-const addLongestStreakPoints = (data) => {
+const addLongestStreakPoints = async (data, playersData) => {
     const plusPoints = 15;
     
     let longestStreak = 0;
@@ -358,15 +365,15 @@ const addLongestStreakPoints = (data) => {
 
     for (let i = 0; i < longestStreakTeams.length; i++) {
         let log = `${playerNames[longestStreakTeams[i] - 1]} had the longest winning streak (+15)`;
-        updateActivity(log, 'fire-flame.png');
-
+        let userID = playersData[longestStreakTeams[i] - 1].user_id;
+        await updateActivity(log, 'fire-flame.png', userID);
         pointsStorage[longestStreakTeams[i] - 1] = plusPoints;
     }
 
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
-const addLoserBracketPlacementsPoints = (data) => {
+const addLoserBracketPlacementsPoints = async (data, playersData) => {
     const seventhPlacePoints = 21;
     const eighthPlacePoints = 18;
     const ninthPlacePoints = 15;
@@ -378,23 +385,27 @@ const addLoserBracketPlacementsPoints = (data) => {
     const tenthPlaceTeam = data[2].w;
 
     let log = `${playerNames[seventhPlaceTeam - 1]} finished in seventh place (+21)`;
-    updateActivity(log, 'loser.png');
+    let userID = playersData[seventhPlaceTeam - 1].user_id;
+    await updateActivity(log, 'loser.png', userID);
     log = `${playerNames[eighthPlaceTeam - 1]} finished in eighth place (+18)`;
-    updateActivity(log, 'dead-fish.png');
+    userID = playersData[eighthPlaceTeam - 1].user_id;
+    await updateActivity(log, 'dead-fish.png', userID);
     log = `${playerNames[ninthPlaceTeam - 1]} finished in ninth place (+15)`;
-    updateActivity(log, 'trash-can.png');
+    userID = playersData[ninthPlaceTeam - 1].user_id;
+    await updateActivity(log, 'trash-can.png', userID);
     log = `${playerNames[tenthPlaceTeam - 1]} finished in tenth place (+13)`;
-    updateActivity(log, 'poop.png');
+    userID = playersData[tenthPlaceTeam - 1].user_id;
+    await updateActivity(log, 'poop.png', userID);
 
     pointsStorage[seventhPlaceTeam - 1] = seventhPlacePoints;
     pointsStorage[eighthPlaceTeam - 1] = eighthPlacePoints;
     pointsStorage[ninthPlaceTeam - 1] = ninthPlacePoints;
     pointsStorage[tenthPlaceTeam - 1] = tenthPlacePoints;
 
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
-const addLoserBracketPlacementsPointsTest = (data) => {
+const addLoserBracketPlacementsPointsTest = (data, playersData) => {
     const seventhPlacePoints = 21;
     const eighthPlacePoints = 18;
     const ninthPlacePoints = 15;
@@ -406,13 +417,17 @@ const addLoserBracketPlacementsPointsTest = (data) => {
     const tenthPlaceTeam = data[2].tenthPlace;
 
     let log = `${playerNames[seventhPlaceTeam - 1]} finished in seventh place (+21)`;
-    updateActivity(log, 'loser.png');
+    let userID = playersData[seventhPlaceTeam - 1].user_id;
+    updateActivity(log, 'loser.png', userID);
     log = `${playerNames[eighthPlaceTeam - 1]} finished in eighth place (+18)`;
-    updateActivity(log, 'dead-fish.png');
+    userID = playersData[eighthPlaceTeam - 1].user_id;
+    updateActivity(log, 'dead-fish.png', userID);
     log = `${playerNames[ninthPlaceTeam - 1]} finished in ninth place (+15)`;
-    updateActivity(log, 'trash-can.png');
+    userID = playersData[ninthPlaceTeam - 1].user_id;
+    updateActivity(log, 'trash-can.png', userID);
     log = `${playerNames[tenthPlaceTeam - 1]} finished in tenth place (+13)`;
-    updateActivity(log, 'poop.png');
+    userID = playersData[tenthPlaceTeam - 1].user_id;
+    updateActivity(log, 'poop.png', userID);
 
     pointsStorage[seventhPlaceTeam - 1] = seventhPlacePoints;
     pointsStorage[eighthPlaceTeam - 1] = eighthPlacePoints;
@@ -422,7 +437,7 @@ const addLoserBracketPlacementsPointsTest = (data) => {
     updateTotalPoints();
 }
 
-const addMedianPoints = (data) => {
+const addMedianPoints = async (data, playersData) => {
     const plusPoints = 3;
     const noPoints = 0;
 
@@ -432,16 +447,17 @@ const addMedianPoints = (data) => {
         if (i < 5) {
             pointsStorage[sortedData[i].roster_id - 1] = plusPoints;
             let log = `${playerNames[sortedData[i].roster_id - 1]} scored above the median (+3)`;
-            updateActivity(log, 'average.png');
+            let userID = playersData[sortedData[i].roster_id - 1].user_id;
+            await updateActivity(log, 'average.png', userID);
         } else {
             pointsStorage[sortedData[i].roster_id - 1] = noPoints;
         }
     }
 
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
-const addMostPointsAgainstPoints = (data) => {
+const addMostPointsAgainstPoints = async (data, playersData) => {
     const plusPoints = 10;
 
     let leastPoints = 0;
@@ -455,13 +471,14 @@ const addMostPointsAgainstPoints = (data) => {
     }
 
     let log = `${playerNames[leastPointsTeam - 1]} had the most points against this season (+10)`;
-    updateActivity(log, 'black-cat.png');
-    
+    let userID = playersData[leastPointsTeam - 1].user_id;
+    await updateActivity(log, 'black-cat.png');
+
     pointsStorage[leastPointsTeam - 1] = plusPoints;
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
-const addMostPointsForPoints = (data) => {
+const addMostPointsForPoints = async (data, playersData) => {
     const plusPoints = 25;
 
     let mostPoints = 0;
@@ -475,15 +492,16 @@ const addMostPointsForPoints = (data) => {
     }
 
     let log = `${playerNames[mostPointsTeam - 1]} scored the most points this season (+25)`;
-    updateActivity(log, 'money-bag.png');
+    let userID = playersData[mostPointsTeam - 1].user_id;
+    await updateActivity(log, 'money-bag.png', userID);
     
     pointsStorage[mostPointsTeam - 1] = plusPoints;
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
 
 
-const addRivalPoints = (data, playersData) => {
+const addRivalPoints = async (data, playersData) => {
     const plusPoints = 5;
 
     const rosterIdsOrder = data.map(entry => entry.roster_id);
@@ -500,32 +518,33 @@ const addRivalPoints = (data, playersData) => {
     }
 
     let log;
+    let userID;
 
-    matchups.forEach(matchup => {
+    for (const matchup of matchups) {
         const [team1, team2] = matchup;
         
         if (team1.rival_id == team2.roster_id || team2.rival_id == team1.roster_id) {
             if (team1.points > team2.points) {
                 pointsStorage[team1.roster_id - 1] = plusPoints;
                 log = `${playerNames[team1.roster_id - 1]} beat their rival (+5)`;
-                updateActivity(log, 'rival.png');
+                userID = playersData[team1.roster_id - 1].user_id;
+                await updateActivity(log, 'rival.png', userID);
             } else if (team1.points < team2.points) {
                 pointsStorage[team2.roster_id - 1] = plusPoints;
                 log = `${playerNames[team2.roster_id - 1]} beat their rival (+5)`;
-                updateActivity(log, 'rival.png');
+                userID = playersData[team2.roster_id - 1].user_id;
+                await updateActivity(log, 'rival.png', userID);
             } else {
-              // figure out tie
+              // Handle tie scenario
             }
         }
+    }
 
-    });
-
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
-const addTopGuyTakedownPoints = (data, playersData) => {
+const addTopGuyTakedownPoints = async (data, playersData) => {
     const plusPoints = 3;
-    const noPoints = 0;
 
     const rosterIdsOrder = data.map(entry => entry.roster_id);
     playersData.sort((a, b) => {
@@ -541,44 +560,47 @@ const addTopGuyTakedownPoints = (data, playersData) => {
     }
 
     let log;
+    let userID;
 
-    matchups.forEach(matchup => {
+    for (const matchup of matchups) {
         const [team1, team2] = matchup;
         
         if (team1.rank == 1 || team2.rank == 1) {
             if(team1.rank == 1 && team2.points > team1.points) {
                 pointsStorage[team2.roster_id - 1] = plusPoints;
                 log = `${playerNames[team2.roster_id - 1]} took down the #1 player (+3)`;
-                updateActivity(log, 'checkmate.png');
+                userID = playersData[team2.roster_id - 1].user_id;
+                await updateActivity(log, 'checkmate.png', userID);
             }
-
+    
             if(team2.rank == 1 && team1.points > team2.points) {
                 pointsStorage[team1.roster_id - 1] = plusPoints;
                 log = `${playerNames[team1.roster_id - 1]} took down the #1 player (+3)`;
-                updateActivity(log, 'checkmate.png');
+                userID = playersData[team1.roster_id - 1].user_id;
+                await updateActivity(log, 'checkmate.png', userID);
             }
         }
-    });
+    }
 
-    updateTotalPoints();
-
+    await updateTotalPoints();
 }
 
-const addUndefeatedPoints = (data) => {
+const addUndefeatedPoints = async (data, playersData) => {
     const plusPoints = 30;
 
     for (let i = 0; i < data.length; i++) {
         if (data[i].settings.losses == 0) {
             pointsStorage[data[i].roster_id - 1] = plusPoints;
             let log = `${playerNames[data[i].roster_id - 1]} went UNDEFEATED (+30)`;
-            updateActivity(log, 'diamond.png');
+            let userID = playersData[data[i].roster_id - 1].user_id;
+            await updateActivity(log, 'diamond.png', userID);
         }
     }
 
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
-const addUpsetPoints = (data, playersData) => {
+const addUpsetPoints = async (data, playersData) => {
     const plusPoints = 2;
     const noPoints = 0;
 
@@ -595,34 +617,36 @@ const addUpsetPoints = (data, playersData) => {
         matchups[matchupIndex].push({'roster_id': data[i].roster_id, 'points': data[i].points, 'rank': playersData[i].rank});
     }
 
-    matchups.forEach(matchup => {
+    let log;
+    let userID;
+
+    for (const matchup of matchups) {
         const [team1, team2] = matchup;
-        let log;
-        
+
         if (team1.points > team2.points) {
             if(team1.rank > team2.rank) {
                 pointsStorage[team1.roster_id - 1] = plusPoints;
-                pointsStorage[team2.roster_id - 1] = noPoints;
                 log = `${playerNames[team1.roster_id - 1]} upset their opponent (+2)`;
-                updateActivity(log, 'danger.png');
+                userID = playersData[team1.roster_id - 1].user_id;
+                await updateActivity(log, 'danger.png', userID);
             }
         } else if (team1.points < team2.points) {
-            if(team1.rank < team2.rank) {
-                pointsStorage[team1.roster_id - 1] = noPoints;
+            if(team2.rank > team1.rank) {
                 pointsStorage[team2.roster_id - 1] = plusPoints;
                 log = `${playerNames[team2.roster_id - 1]} upset their opponent (+2)`;
-                updateActivity(log, 'danger.png');
+                userID = playersData[team2.roster_id - 1].user_id;
+                await updateActivity(log, 'danger.png', userID);
             }
         } else {
           // figure out tie
         }
-    });
+    }
 
-    updateTotalPoints();
+    await updateTotalPoints();
 
 }
 
-const addWinnerBracketPlacementsPoints = (data) => {
+const addWinnerBracketPlacementsPoints = async (data, playersData) => {
     const firstPlacePoints = 100;
     const secondPlacePoints = 70;
     const thirdPlacePoints = 50;
@@ -638,17 +662,23 @@ const addWinnerBracketPlacementsPoints = (data) => {
     const sixthPlaceTeam = data[4].l;
 
     let log = `${playerNames[firstPlaceTeam - 1]} finished in first place (+100)`;
-    updateActivity(log, 'crown.png');
+    let userID = playersData[firstPlaceTeam - 1].user_id;
+    await updateActivity(log, 'crown.png', userID);
     log = `${playerNames[secondPlaceTeam - 1]} finished in second place (+70)`;
-    updateActivity(log, 'second-prize.png');
+    userID = playersData[secondPlaceTeam - 1].user_id;
+    await updateActivity(log, 'second-prize.png', userID);
     log = `${playerNames[thirdPlaceTeam - 1]} finished in third place (+50)`;
-    updateActivity(log, 'third-prize.png');
+    userID = playersData[thirdPlaceTeam - 1].user_id;
+    await updateActivity(log, 'third-prize.png', userID);
     log = `${playerNames[fourthPlaceTeam - 1]} finished in fourth place (+30)`;
-    updateActivity(log, 'thumb-up.png');
+    userID = playersData[fourthPlaceTeam - 1].user_id;
+    await updateActivity(log, 'thumb-up.png', userID);
     log = `${playerNames[fifthPlaceTeam - 1]} finished in fifth place (+27)`;
-    updateActivity(log, 'mid.png');
+    userID = playersData[fifthPlaceTeam - 1].user_id;
+    await updateActivity(log, 'mid.png', userID);
     log = `${playerNames[sixthPlaceTeam - 1]} finished in sixth place (+24)`;
-    updateActivity(log, 'open-mouth.png');
+    userID = playersData[sixthPlaceTeam - 1].user_id;
+    await updateActivity(log, 'open-mouth.png', userID);
 
     pointsStorage[firstPlaceTeam - 1] = firstPlacePoints;
     pointsStorage[secondPlaceTeam - 1] = secondPlacePoints;
@@ -657,7 +687,7 @@ const addWinnerBracketPlacementsPoints = (data) => {
     pointsStorage[fifthPlaceTeam - 1] = fifthPlacePoints;
     pointsStorage[sixthPlaceTeam - 1] = sixthPlacePoints;
 
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
 const addWinnerBracketPlacementsPointsTest = (data) => {
@@ -698,9 +728,8 @@ const addWinnerBracketPlacementsPointsTest = (data) => {
     updateTotalPoints();
 }
 
-const addWinWeekPoints = (data) => {
+const addWinWeekPoints = async (data, playersData) => {
     const plusPoints = 5;
-    const noPoints = 0;
 
     const matchups = [[],[],[],[],[]];
     
@@ -709,55 +738,88 @@ const addWinWeekPoints = (data) => {
         matchups[matchupIndex].push({'roster_id': data[i].roster_id, 'points': data[i].points});
     }
 
-    matchups.forEach(matchup => {
+    for (const matchup of matchups) {
         const [team1, team2] = matchup;
         let log;
+        let userID;
         
         if (team1.points > team2.points) {
             pointsStorage[team1.roster_id - 1] = plusPoints;
-            pointsStorage[team2.roster_id - 1] = noPoints;
             log = `${playerNames[team1.roster_id - 1]} won their week (+5)`;
-
+            userID = playersData[team1.roster_id - 1].user_id;
         } else if (team1.points < team2.points) {
-            pointsStorage[team1.roster_id - 1] = noPoints;
             pointsStorage[team2.roster_id - 1] = plusPoints;
             log = `${playerNames[team2.roster_id - 1]} won their week (+5)`;
-
+            userID = playersData[team2.roster_id - 1].user_id;
         } else {
-          // figure out tie
+            // Handle tie scenario
         }
 
-        updateActivity(log, 'trophy.png');
-    });
+        await updateActivity(log, 'trophy.png', userID);
+    }
 
-    updateTotalPoints();
+    await updateTotalPoints();
 }
 
-const updateActivity = (log, iconPath) => {
-    fetch('http://192.168.1.121:3000/activity', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ log: log, year: currentYear, icon_path: iconPath, week: currentWeek }),
-    })
-    .then(response => response.json())
-    .then(data => {
+const updateActivity = async (log, iconPath, userID) => {
+    try {
+        const response = await fetch('http://192.168.1.121:3000/activity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ log: log, year: currentYear, icon_path: iconPath, week: currentWeek, user_id: userID }),
+        });
+        const data = await response.json();
         //console.log(data);
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Error posting log: ', error);
-    })
+    }
 }
 
-const updateTotalPoints = () => {
-    fetch('http://192.168.1.121:3000/update/points', {
+const updateTotalPoints = async () => {
+    try {
+        await fetch('http://192.168.1.121:3000/update/points', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(pointsStorage)
-        })
-
-    pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        });
+        // Reset pointsStorage after ensuring the fetch operation has completed
+        pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    } catch (error) {
+        console.error('Error updating points: ', error);
+    }
 }
+
+const getPlayerData = async () => {
+    try {
+        const response = await fetch('http://192.168.1.121:3000/players', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.log('Error getting players: ', error);
+    }
+};
+
+const getMatchupsData = async (week) => {
+    try {
+        const response = await fetch(`https://api.sleeper.app/v1/league/995196431700942848/matchups/${week}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error getting week scoring:', error);
+    }
+}
+
