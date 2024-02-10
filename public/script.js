@@ -50,7 +50,7 @@ const getUserID = async (name) => {
 }
 
 const populateActivity = (data) => {
-    data = data.sort((a, b) => b.week - a.week); 
+    data = data.sort((a, b) => b.week - a.week);
     console.log(data)
 
     const activityContainer = document.querySelector('.activity-container');
@@ -58,15 +58,15 @@ const populateActivity = (data) => {
 
     // gets biggest week from the sorted data (which would be the first result) and then that's used for
     // the week dividers
-    let weekCounter = data[0].week;
+    let weekCounter = 0;
 
     for (let i = 0; i < data.length; i++) {
-        if(data[i].week == weekCounter) {
+        if(data[i].week != weekCounter) {
+            weekCounter = data[i].week;
             const weekTitle = document.createElement('h3');
             weekTitle.classList.add('activity-week-title');
             weekTitle.innerHTML = `Week ${weekCounter}`;
             activityContainer.append(weekTitle);
-            weekCounter--;
         }
         
         let activityTagContainer = document.createElement('div');

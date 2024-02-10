@@ -7,15 +7,6 @@ const sleeperPlayerData = JSON.parse(rawData);
 const unData = fs.readFileSync('./undefeated-test.json');
 const undefeatedData = JSON.parse(unData);
 
-
-// Call stack for scoring basically looks like 
-// updateWeekScoring()
-//      => fetch matchup data
-//          => saves json copy of the week (exportData())
-//          => calls points category to add (add<Category>())
-//               => posts log log for category 
-//          => fetch update to players total points
-
 // put points to add in pointsStorage, index is relative to roster_id
 let pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const playerNames = [];
@@ -24,6 +15,7 @@ const currentYear = 1;
 let currentWeek = 1;
 
 export const updateRanks = async () => {
+    //let ranksData = await getRanksData();
     try {
         const response = await fetch('https://api.sleeper.app/v1/league/995196431700942848/rosters', {
             method: 'GET',
@@ -66,54 +58,6 @@ export const updateRanks = async () => {
         console.log('Error getting players: ', error);
     }
 }
-
-
-// export const updateWeek = async (week) => {
-//     try {
-//         const response = await fetch('http://192.168.1.121:3000/players', {
-//             method: 'GET',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//         });
-
-//         const data = await response.json();
-
-//         const playersData = data.sort((a, b) => a.roster_id - b.roster_id);
-
-//         for (let i = 0; i < playersData.length; i++) {
-//             playerNames.push(playersData[i].team_name);
-//         }
-
-//         updateWeekScoring(playersData, week);
-
-//     } catch (error) {
-//         console.log('Error getting players: ', error);
-//     }
-// }
-
-// export const updateWeek = (week) => {
-
-//      fetch(`http://192.168.1.121:3000/players`, {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         const playersData = data.sort((a, b) => a.roster_id - b.roster_id);
-
-//         for (let i = 0; i < playersData.length; i++) {
-//             playerNames.push(playersData[i].team_name);
-//         }
-
-//         updateWeekScoring(playersData, week);
-//     })
-//     .catch(error => {
-//         console.error('Error getting year stats:', error);
-//     })
-// }
 
 export const updateYear = async () => {
     try {
@@ -181,11 +125,27 @@ export const updateLoserBracketPlacements = async (data) => {
 }
 
 export const updateWeekScoring = async (week) => {
-    const playersData = await getPlayerData();
+    let playersData = await getPlayerData();
     const matchupsData = await getMatchupsData(week);
+
+
+    // to set the names in the player array
+    playersData = playersData.sort((a, b) => a.roster_id - b.roster_id);
+
+    for (let i = 0; i < playersData.length; i++) {
+        playerNames.push(playersData[i].team_name);
+    }
         
     exportData(matchupsData);
-    addHighestScorerPoints(matchupsData, playersData, week);
+    addHighestScorerPoints(matchupsData, playersData);
+    // addHighestPlayerPoints(matchupsData, playersData);
+    // addBlowoutPoints(matchupsData, playersData);
+    // addHighestPointsInLossPoints(matchupsData, playersData);
+    // addTopGuyTakedownPoints(matchupsData, playersData);
+    // addRivalPoints(matchupsData, playersData);
+    // addUpsetPoints(matchupsData, playersData);
+    // addMedianPoints(matchupsData, playersData);
+    // addWinWeekPoints(matchupsData, playersData);
     currentWeek++;
 };
 
