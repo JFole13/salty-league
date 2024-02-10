@@ -56,8 +56,6 @@ const populateActivity = (data) => {
     const activityContainer = document.querySelector('.activity-container');
     activityContainer.innerHTML = '';
 
-    // gets biggest week from the sorted data (which would be the first result) and then that's used for
-    // the week dividers
     let weekCounter = 0;
 
     for (let i = 0; i < data.length; i++) {
@@ -65,7 +63,13 @@ const populateActivity = (data) => {
             weekCounter = data[i].week;
             const weekTitle = document.createElement('h3');
             weekTitle.classList.add('activity-week-title');
-            weekTitle.innerHTML = `Week ${weekCounter}`;
+
+            if (data[i].week == 15) {
+                weekTitle.innerHTML = `End of Season`;
+            } else {
+                weekTitle.innerHTML = `Week ${weekCounter}`;
+            }
+
             activityContainer.append(weekTitle);
         }
         

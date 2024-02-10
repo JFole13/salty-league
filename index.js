@@ -4,7 +4,7 @@ import fs from 'fs';
 import pkg from 'pg'
 import schedule from 'node-schedule';
 
-import { updateWinnerBracketPlacements, updateLoserBracketPlacements, updateRanks, updateWeekScoring, updateYear } from './scoring.js';
+import { updateLoserBracketPlacements, updateRanks, updateWeekScoring, updateWinnerBracketPlacements, updateYearScoring } from './scoring.js';
 const { Client } = pkg;
 
 const year1Data = fs.readFileSync('./year1Test.json');
@@ -165,18 +165,15 @@ let currentWeek = 1;
 const updateSalty = () => {
     updateRanks();
 
-
     (async () => {
         for (let i = 1; i < 15; i++) {
             await updateWeekScoring(i);
         }
+
+        //updateYearScoring();
+        //updateWinnerBracketPlacements();
+        //updateLoserBracketPlacements();
     })();
-    // updateWeek(1);
-    // updateWeek(2);
-    // updateYear();
-    // updateWinnerBracketPlacements();
-    // updateLoserBracketPlacements();
-    // end of the year
 }
 
 const tenYearSimulation = () => {
