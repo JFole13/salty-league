@@ -20,15 +20,17 @@ export const updateWeekScoring = async (week) => {
     const matchupsData = await getMatchupsData(week);
         
     exportData(matchupsData);
-    addBlowoutPoints(matchupsData, playersData);
-    //addHighestPlayerPoints(matchupsData, playersData);
-    //addHighestPointsInLossPoints(matchupsData, playersData);
-    //addHighestScorerPoints(matchupsData, playersData);
-    //addMedianPoints(matchupsData, playersData); Not working correctly
-    //addRivalPoints(matchupsData, playersData);
-    //addTopGuyTakedownPoints(matchupsData, playersData);
-    //addUpsetPoints(matchupsData, playersData); Not working correctly
-    //addWinWeekPoints(matchupsData, playersData); Not working correctly
+
+    // order of these correspond to how they show on the site
+    await addBlowoutPoints(matchupsData, playersData);
+    await addHighestPlayerPoints(matchupsData, playersData);
+    await addHighestPointsInLossPoints(matchupsData, playersData);
+    await addHighestScorerPoints(matchupsData, playersData);
+    await addRivalPoints(matchupsData, playersData);
+    await addTopGuyTakedownPoints(matchupsData, playersData);
+    await addUpsetPoints(matchupsData, playersData);
+    await addMedianPoints(matchupsData, playersData);
+    await addWinWeekPoints(matchupsData, playersData);
     currentWeek++;
 };
 
@@ -36,11 +38,49 @@ export const updateYearScoring = async () => {
     const playersData = await getPlayersData();
     const rostersData = await getRostersData();
 
-    addLongestStreakPoints(rostersData, playersData);
-    // addUndefeatedPoints(data, playersData);
-        //     addMostPointsForPoints(data, playersData);
-    //     addMostPointsAgainstPoints(data, playersData);
+    await addUndefeatedPoints(rostersData, playersData);
+    await addLongestStreakPoints(rostersData, playersData);
+    await addMostPointsForPoints(rostersData, playersData);
+    await addMostPointsAgainstPoints(rostersData, playersData);
 };
+
+export const updateWinnerBracketPlacements = async () => {
+    let playersData = await getPlayersData();
+
+    const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/winners_bracket';
+    fetch(sleeperUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        addWinnerBracketPlacementsPoints(data, playersData);
+    })
+    .catch(error => {
+        console.error('Error getting year stats:', error);
+    })
+}
+
+export const updateLoserBracketPlacements = async () => {
+    let playersData = await getPlayersData();
+
+    const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/losers_bracket';
+    fetch(sleeperUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        addLoserBracketPlacementsPoints(data, playersData);
+    })
+    .catch(error => {
+        console.error('Error getting year stats:', error);
+    })
+}
 
 const exportData = (data) => {
     try {
@@ -220,7 +260,7 @@ const addLoserBracketPlacementsPoints = async (data, playersData) => {
     await updateActivity(log, 'loser.png', finalWeek, userID);
     log = `${playerNames[eighthPlaceTeam - 1]} finished in eighth place (+18)`;
     userID = playersData[eighthPlaceTeam - 1].user_id;
-    await updateActivity(log, 'dead-fish.png', userID);
+    await updateActivity(log, 'dead-fish.png', finalWeek, userID);
     log = `${playerNames[ninthPlaceTeam - 1]} finished in ninth place (+15)`;
     userID = playersData[ninthPlaceTeam - 1].user_id;
     await updateActivity(log, 'trash-can.png', finalWeek, userID);
@@ -253,16 +293,16 @@ const addMedianPoints = async (matchupsData, playersData) => {
     await updateTotalPoints();
 };
 
-const addMostPointsAgainstPoints = async (data, playersData) => {
+const addMostPointsAgainstPoints = async (rostersData, playersData) => {
     const plusPoints = 10;
 
     let leastPoints = 0;
     let leastPointsTeam;
 
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].settings.fpts_against > leastPoints) {
-            leastPoints = data[i].settings.fpts_against;
-            leastPointsTeam = data[i].roster_id;
+    for (let i = 0; i < rostersData.length; i++) {
+        if (rostersData[i].settings.fpts_against > leastPoints) {
+            leastPoints = rostersData[i].settings.fpts_against;
+            leastPointsTeam = rostersData[i].roster_id;
         }
     }
 
@@ -272,18 +312,18 @@ const addMostPointsAgainstPoints = async (data, playersData) => {
 
     pointsStorage[leastPointsTeam - 1] = plusPoints;
     await updateTotalPoints();
-}
+};
 
-const addMostPointsForPoints = async (data, playersData) => {
+const addMostPointsForPoints = async (rostersData, playersData) => {
     const plusPoints = 25;
 
     let mostPoints = 0;
     let mostPointsTeam;
 
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].settings.fpts > mostPoints) {
-            mostPoints = data[i].settings.fpts;
-            mostPointsTeam = data[i].roster_id;
+    for (let i = 0; i < rostersData.length; i++) {
+        if (rostersData[i].settings.fpts > mostPoints) {
+            mostPoints = rostersData[i].settings.fpts;
+            mostPointsTeam = rostersData[i].roster_id;
         }
     }
 
@@ -293,7 +333,7 @@ const addMostPointsForPoints = async (data, playersData) => {
     
     pointsStorage[mostPointsTeam - 1] = plusPoints;
     await updateTotalPoints();
-}
+};
 
 const addRivalPoints = async (matchupsData, playersData) => {
     const plusPoints = 5;
@@ -381,14 +421,14 @@ const addTopGuyTakedownPoints = async (matchupsData, playersData) => {
     await updateTotalPoints();
 };
 
-const addUndefeatedPoints = async (data, playersData) => {
+const addUndefeatedPoints = async (rostersData, playersData) => {
     const plusPoints = 30;
 
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].settings.losses == 0) {
-            pointsStorage[data[i].roster_id - 1] = plusPoints;
-            let log = `${playerNames[data[i].roster_id - 1]} went UNDEFEATED (+30)`;
-            let userID = playersData[data[i].roster_id - 1].user_id;
+    for (let i = 0; i < rostersData.length; i++) {
+        if (rostersData[i].settings.losses == 0) {
+            pointsStorage[rostersData[i].roster_id - 1] = plusPoints;
+            let log = `${playerNames[rostersData[i].roster_id - 1]} went UNDEFEATED (+30)`;
+            let userID = playersData[rostersData[i].roster_id - 1].user_id;
             await updateActivity(log, 'diamond.png', finalWeek, userID);
         }
     }
@@ -485,9 +525,7 @@ const addWinnerBracketPlacementsPoints = async (data, playersData) => {
     pointsStorage[sixthPlaceTeam - 1] = sixthPlacePoints;
 
     await updateTotalPoints();
-}
-
-
+};
 
 const addWinWeekPoints = async (matchupsData, playersData) => {
     const plusPoints = 5;
@@ -668,44 +706,6 @@ export const updateRanks = async () => {
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
-    })
-}
-
-export const updateLoserBracketPlacements = async (data) => {
-    let playersData = await getPlayersData();
-
-    const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/losers_bracket';
-    fetch(sleeperUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        addLoserBracketPlacementsPoints(data, playersData);
-    })
-    .catch(error => {
-        console.error('Error getting year stats:', error);
-    })
-}
-
-export const updateWinnerBracketPlacements = async (data) => {
-    let playersData = await getPlayersData();
-
-    const sleeperUrl = 'https://api.sleeper.app/v1/league/995196431700942848/winners_bracket';
-    fetch(sleeperUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        addWinnerBracketPlacementsPoints(data, playersData);
-    })
-    .catch(error => {
-        console.error('Error getting year stats:', error);
     })
 }
 

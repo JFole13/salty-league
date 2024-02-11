@@ -321,11 +321,11 @@ document.querySelector('.punishment-title').addEventListener('click', openModal)
 document.querySelector('.punishment-close-modal-btn').addEventListener('click', closeModal);
 
 function openModal() {
-  document.querySelector('.punishment-modal').style.display = 'block';
+    document.querySelector('.punishment-modal').style.display = 'block';
 }
 
 function closeModal() {
-  document.querySelector('.punishment-modal').style.display = 'none';
+    document.querySelector('.punishment-modal').style.display = 'none';
 }
 
 

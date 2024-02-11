@@ -162,29 +162,30 @@ app.listen(3000, '192.168.1.121', () => {
 
 let currentWeek = 1;
 
-const updateSalty = () => {
-    updateRanks();
+const updateSalty = async () => {
+    await updateRanks();
 
-    (async () => {
-        for (let i = 1; i < 15; i++) {
-            await updateWeekScoring(i);
-        }
+    for (let i = 1; i < 15; i++) {
+        await updateWeekScoring(i);
+    }
 
-        //updateYearScoring();
-        //updateWinnerBracketPlacements();
-        //updateLoserBracketPlacements();
-    })();
+    await updateWinnerBracketPlacements();
+    await updateLoserBracketPlacements();
+    await updateYearScoring();
 }
 
-const tenYearSimulation = () => {
+const tenYearSimulation = async () => {
     for(let i = 0; i < 1; i++) {
-        for (let j = 0; j < 15; j++) {
-            updateWeek(j);
-        }
+        updateRanks();
 
-        updateYear();
-        updateWinnerBracketPlacements(year1Data);
-        updateLoserBracketPlacements(year1Data);
+        (async () => {
+            for (let i = 1; i < 15; i++) {
+                await updateWeekScoring(i);
+            }
+            await updateWinnerBracketPlacements();
+            await updateLoserBracketPlacements();
+            await updateYearScoring();
+        })();
     }
 }
 
