@@ -2,13 +2,11 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import fs from 'fs';
 import pkg from 'pg'
-import schedule from 'node-schedule';
 
 import { updateLoserBracketPlacements, updateRanks, updateWeekScoring, updateWinnerBracketPlacements, updateYearScoring } from './scoring.js';
 const { Client } = pkg;
 
 const year1Data = fs.readFileSync('./year1Test.json');
-
 
 const client = new Client({
     user: 'postgres',
@@ -89,9 +87,11 @@ app.get('/players/:name', async (req, res) => {
 app.post('/activity', async (req, res) => {
     try {
         const { log, year, icon_path, week, user_id } = req.body;
+
         const query = `INSERT INTO activity (log, year, icon_path, week, user_id) VALUES ($1, $2, $3, $4, $5)`;
 
         const values = [log, year, icon_path, week, user_id];
+
         await client.query(query, values);
         res.json({ log: 'New Activity Posted' });
     } catch (error) {

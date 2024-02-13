@@ -19,7 +19,7 @@ export const fetchActivity = (year) => {
 const fetchActivityFiltered = async (name, year) => {
     let userID = await getUserID(name);
 
-    fetch(`/activity/player/${userID}/${year}`, {
+    await fetch(`/activity/player/${userID}/${year}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

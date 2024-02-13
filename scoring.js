@@ -22,10 +22,10 @@ export const updateWeekScoring = async (week) => {
     exportData(matchupsData);
 
     // order of these correspond to how they show on the site
-    await addBlowoutPoints(matchupsData, playersData);
-    await addHighestPlayerPoints(matchupsData, playersData);
-    await addHighestPointsInLossPoints(matchupsData, playersData);
     await addHighestScorerPoints(matchupsData, playersData);
+    await addHighestPlayerPoints(matchupsData, playersData);
+    await addBlowoutPoints(matchupsData, playersData);
+    await addHighestPointsInLossPoints(matchupsData, playersData);
     await addRivalPoints(matchupsData, playersData);
     await addTopGuyTakedownPoints(matchupsData, playersData);
     await addUpsetPoints(matchupsData, playersData);
@@ -284,8 +284,13 @@ const addMedianPoints = async (matchupsData, playersData) => {
     for (let i = 0; i < sortedData.length; i++) {
         if (i < 5) {
             pointsStorage[sortedData[i].roster_id - 1] = plusPoints;
+
+            // console.log(playerNames[sortedData[i].roster_id - 1]);
+            // let jsole = sortedData[i].roster_id - 1
+            // console.log(playersData[i].user_id);
+
             let log = `${playerNames[sortedData[i].roster_id - 1]} scored above the median (+3)`;
-            let userID = playersData[sortedData[i].roster_id - 1].user_id;
+            let userID = playersData[i].user_id;
             await updateActivity(log, 'average.png', currentWeek, userID);
         }
     }
