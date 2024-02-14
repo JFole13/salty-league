@@ -280,17 +280,14 @@ const addMedianPoints = async (matchupsData, playersData) => {
     const plusPoints = 3;
 
     const sortedData = matchupsData.sort((a, b) => b.points - a.points);
+    playersData = playersData.sort((a, b) => a.roster_id - b.roster_id);
 
     for (let i = 0; i < sortedData.length; i++) {
         if (i < 5) {
             pointsStorage[sortedData[i].roster_id - 1] = plusPoints;
 
-            // console.log(playerNames[sortedData[i].roster_id - 1]);
-            // let jsole = sortedData[i].roster_id - 1
-            // console.log(playersData[i].user_id);
-
             let log = `${playerNames[sortedData[i].roster_id - 1]} scored above the median (+3)`;
-            let userID = playersData[i].user_id;
+            let userID = playersData[sortedData[i].roster_id - 1].user_id;
             await updateActivity(log, 'average.png', currentWeek, userID);
         }
     }
@@ -357,6 +354,8 @@ const addRivalPoints = async (matchupsData, playersData) => {
                                         'rank': playersData[i].rank, 'rival_id': playersData[i].rival_id});
     }
 
+    playersData = playersData.sort((a, b) => a.roster_id - b.roster_id);
+
     let log;
     let userID;
 
@@ -366,11 +365,13 @@ const addRivalPoints = async (matchupsData, playersData) => {
         if (team1.rival_id == team2.roster_id || team2.rival_id == team1.roster_id) {
             if (team1.points > team2.points) {
                 pointsStorage[team1.roster_id - 1] = plusPoints;
+
                 log = `${playerNames[team1.roster_id - 1]} beat their rival (+5)`;
                 userID = playersData[team1.roster_id - 1].user_id;
                 await updateActivity(log, 'rival.png', currentWeek, userID);
             } else if (team1.points < team2.points) {
                 pointsStorage[team2.roster_id - 1] = plusPoints;
+
                 log = `${playerNames[team2.roster_id - 1]} beat their rival (+5)`;
                 userID = playersData[team2.roster_id - 1].user_id;
                 await updateActivity(log, 'rival.png', currentWeek, userID);
@@ -399,6 +400,8 @@ const addTopGuyTakedownPoints = async (matchupsData, playersData) => {
         matchups[matchupIndex].push({'roster_id': matchupsData[i].roster_id, 'points': matchupsData[i].points, 
         'rank': playersData[i].rank});
     }
+
+    playersData = playersData.sort((a, b) => a.roster_id - b.roster_id);
 
     let log;
     let userID;
@@ -443,7 +446,6 @@ const addUndefeatedPoints = async (rostersData, playersData) => {
 
 const addUpsetPoints = async (matchupsData, playersData) => {
     const plusPoints = 2;
-    const noPoints = 0;
 
     const rosterIdsOrder = matchupsData.map(entry => entry.roster_id);
     playersData.sort((a, b) => {
@@ -458,6 +460,8 @@ const addUpsetPoints = async (matchupsData, playersData) => {
         matchups[matchupIndex].push({'roster_id': matchupsData[i].roster_id, 'points': matchupsData[i].points, 
                                         'rank': playersData[i].rank});
     }
+
+    playersData = playersData.sort((a, b) => a.roster_id - b.roster_id);
 
     let log;
     let userID;
