@@ -15,6 +15,9 @@ const year1Data = fs.readFileSync('./year1Test.json');
 const PORT = process.env.PORT;
 const URL = process.env.URL;
 
+// const PORT = process.env.LOCAL_PORT;
+// const URL = process.env.LOCAL_URL;
+
 // const client = new Client({
 //     user: 'postgres',
 //     host: 'localhost',
@@ -153,19 +156,10 @@ app.get('/players', async (req, res) => {
     }
 });
 
-// let port = process.env.PORT;
-// if (port == null || port == "") {
-//   port = 8000;
-// }
-
 app.listen(PORT, URL, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 
-// const port = 3000;
-// app.listen(port, () => {
-//     console.log(`Example app listening on port ${port}`)
-// })
 
 let currentWeek = 1;
 
@@ -196,7 +190,7 @@ const tenYearSimulation = async () => {
     }
 }
 
-updateSalty();
+//updateSalty();
 //tenYearSimulation();
 
 // CRON string reads 'on Tuesdays (2) at 12:00 (0, 12) on any day of the month (first *) and any month (second *)'
