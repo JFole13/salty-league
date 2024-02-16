@@ -197,7 +197,7 @@ const tenYearSimulation = async () => {
     }
 }
 
-//updateSalty();
+updateSalty();
 //tenYearSimulation();
 
 // CRON string reads 'on Tuesdays (2) at 12:00 (0, 12) on any day of the month (first *) and any month (second *)'
