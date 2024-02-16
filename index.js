@@ -1,20 +1,27 @@
 import bodyParser from 'body-parser';
+import dotenv  from "dotenv";
 import express from 'express';
 import fs from 'fs';
 import pkg from 'pg'
 
 import { updateLoserBracketPlacements, updateRanks, updateWeekScoring, updateWinnerBracketPlacements, updateYearScoring } from './scoring.js';
+
 const { Client } = pkg;
+
+dotenv.config()
 
 const year1Data = fs.readFileSync('./year1Test.json');
 
-const client = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'saltydb',
-    password: 'b55',
-    port: 5432,
-  });
+const baseUrl = process.env.API_BASE_URL;
+console.log(baseUrl)
+
+// const client = new Client({
+//     user: 'postgres',
+//     host: 'localhost',
+//     database: 'saltydb',
+//     password: 'b55',
+//     port: 5432,
+//   });
 
 client.connect()
 .then(() => console.log('Connected to PostgreSQL'))

@@ -571,7 +571,7 @@ const addWinWeekPoints = async (matchupsData, playersData) => {
 
 const updateActivity = async (log, iconPath, week, userID) => {
     try {
-        const response = await fetch('http://192.168.1.121:3000/activity', {
+        const response = await fetch('/activity', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -587,7 +587,7 @@ const updateActivity = async (log, iconPath, week, userID) => {
 
 const updateTotalPoints = async () => {
     try {
-        await fetch('http://192.168.1.121:3000/update/points', {
+        await fetch('/update/points', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -628,7 +628,7 @@ const getMatchupsData = async (week) => {
 
 const getPlayersData = async () => {
     try {
-        const response = await fetch('http://192.168.1.121:3000/players', {
+        const response = await fetch('/players', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -702,7 +702,7 @@ const getRostersData = async () => {
 export const updateRanks = async () => {
     let ranksData = await getRanksData();
 
-    fetch(`http://192.168.1.121:3000/update/ranks`, {
+    fetch(`/update/ranks`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
