@@ -571,7 +571,7 @@ const addWinWeekPoints = async (matchupsData, playersData) => {
 
 const updateActivity = async (log, iconPath, week, userID) => {
     try {
-        const response = await fetch('/activity', {
+        const response = await fetch('https://salty-league.onrender.com/activity', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -587,7 +587,7 @@ const updateActivity = async (log, iconPath, week, userID) => {
 
 const updateTotalPoints = async () => {
     try {
-        await fetch('/update/points', {
+        await fetch('https://salty-league.onrender.com/update/points', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -628,7 +628,7 @@ const getMatchupsData = async (week) => {
 
 const getPlayersData = async () => {
     try {
-        const response = await fetch('/players', {
+        const response = await fetch('https://salty-league.onrender.com/players', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
