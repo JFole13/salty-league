@@ -12,8 +12,8 @@ dotenv.config()
 
 const year1Data = fs.readFileSync('./year1Test.json');
 
-const baseUrl = process.env.API_BASE_URL;
-console.log(baseUrl)
+const PORT = process.env.PORT;
+const URL = process.env.URL;
 
 // const client = new Client({
 //     user: 'postgres',
@@ -158,9 +158,9 @@ app.get('/players', async (req, res) => {
 //   port = 8000;
 // }
 
-app.listen(() => {
-  console.log(`Server is running`);
-});
+app.listen(PORT, URL, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 
 // const port = 3000;
 // app.listen(port, () => {

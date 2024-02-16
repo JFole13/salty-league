@@ -7,6 +7,9 @@ const sleeperPlayerData = JSON.parse(rawData);
 const unData = fs.readFileSync('./undefeated-test.json');
 const undefeatedData = JSON.parse(unData);
 
+const URL = process.env.URL;
+
+
 // put points to add in pointsStorage, index - 1 is relative to roster_id
 let pointsStorage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const playerNames = [];
@@ -571,7 +574,7 @@ const addWinWeekPoints = async (matchupsData, playersData) => {
 
 const updateActivity = async (log, iconPath, week, userID) => {
     try {
-        const response = await fetch('https://salty-league.onrender.com/activity', {
+        const response = await fetch(`${URL}/activity`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -587,7 +590,7 @@ const updateActivity = async (log, iconPath, week, userID) => {
 
 const updateTotalPoints = async () => {
     try {
-        await fetch('https://salty-league.onrender.com/update/points', {
+        await fetch(`${URL}/update/points`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -628,7 +631,7 @@ const getMatchupsData = async (week) => {
 
 const getPlayersData = async () => {
     try {
-        const response = await fetch('https://salty-league.onrender.com/players', {
+        const response = await fetch(`${URL}/players`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
