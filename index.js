@@ -158,8 +158,8 @@ app.get('/players', async (req, res) => {
 //   port = 8000;
 // }
 
-app.listen(3000, '192.168.1.121', () => {
-  console.log(`Server is running at http://192.168.1.121:3000`);
+app.listen(() => {
+  console.log(`Server is running`);
 });
 
 // const port = 3000;
