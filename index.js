@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import dotenv  from "dotenv";
 import express from 'express';
 import fs from 'fs';
@@ -18,13 +19,19 @@ const URL = process.env.URL;
 // const PORT = process.env.LOCAL_PORT;
 // const URL = process.env.LOCAL_URL;
 
-const CONNECTION = process.env.POSTGRESQL_CONNECTION;
-
 console.log(CONNECTION)
 
 const client = new Client({
     connectionString: CONNECTION,
-  });
+});
+
+// const client = new Client({
+//     user: 'postgres',
+//     host: 'localhost',
+//     database: 'saltydb',
+//     password: 'b55',
+//     port: 5432,
+// });
 
 client.connect()
 .then(() => console.log('Connected to PostgreSQL'))
@@ -32,8 +39,9 @@ client.connect()
 
 const app = express();
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
@@ -158,7 +166,7 @@ app.get('/players', async (req, res) => {
 
 app.listen(PORT, URL, () => {
     console.log(`Server is running on port ${PORT}`);
-  });
+});
 
 
 let currentWeek = 1;
