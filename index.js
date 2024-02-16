@@ -17,10 +17,10 @@ const PORT = process.env.PORT;
 const URL = process.env.URL;
 
 // const PORT = process.env.LOCAL_PORT;
-// const URL = process.env.LOCAL_URL;W
+// const URL = process.env.LOCAL_URL;
 
 const client = new Client({
-    connectionString: CONNECTION,
+    connectionString: POSTGRESQL_CONNECTION,
 });
 
 // const client = new Client({
