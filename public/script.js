@@ -1,7 +1,7 @@
 export const currentYear = 1;
 
 export const fetchActivity = (year) => {
-    fetch(`/activity/${year}`, {
+    fetch(`https://salty-league.onrender.com/activity/${year}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -248,7 +248,7 @@ const changeLeagueType = (leagueTypeText, leagueTypeClass, url) => {
 }
 
 const fetchCurrentRankings = () => {
-    fetch('/players', {
+    fetch('https://salty-league.onrender.com/players', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
