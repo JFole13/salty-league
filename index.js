@@ -20,7 +20,7 @@ const CONNECTION = process.env.POSTGRESQL_CONNECTION;
 // const URL = process.env.LOCAL_URL;
 
 const client = new Client({
-    connectionString: connectionString,
+    connectionString: CONNECTION,
   });
 
 client.connect()
