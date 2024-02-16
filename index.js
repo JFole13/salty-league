@@ -20,7 +20,7 @@ const URL = process.env.URL;
 // const URL = process.env.LOCAL_URL;
 
 const client = new Client({
-    connectionString: POSTGRESQL_CONNECTION,
+    connectionString: POSTGRESQL_CONNECTION
 });
 
 // const client = new Client({
