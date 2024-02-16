@@ -18,6 +18,7 @@ const URL = process.env.URL;
 
 // const PORT = process.env.LOCAL_PORT;
 // const URL = process.env.LOCAL_URL;
+const POSTGRESQL_CONNECTION = process.env.POSTGRESQL_CONNECTION;
 
 const client = new Client({
     connectionString: POSTGRESQL_CONNECTION
