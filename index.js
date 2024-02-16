@@ -17,9 +17,7 @@ const PORT = process.env.PORT;
 const URL = process.env.URL;
 
 // const PORT = process.env.LOCAL_PORT;
-// const URL = process.env.LOCAL_URL;
-
-console.log(CONNECTION)
+// const URL = process.env.LOCAL_URL;W
 
 const client = new Client({
     connectionString: CONNECTION,
