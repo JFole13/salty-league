@@ -23,9 +23,9 @@ console.log(baseUrl)
 //     port: 5432,
 //   });
 
-client.connect()
-.then(() => console.log('Connected to PostgreSQL'))
-.catch(err => console.error('Error connecting to PostgreSQL', err));
+// client.connect()
+// .then(() => console.log('Connected to PostgreSQL'))
+// .catch(err => console.error('Error connecting to PostgreSQL', err));
 
 const app = express();
 app.use(express.static('public'));
