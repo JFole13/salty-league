@@ -705,7 +705,7 @@ const getRostersData = async () => {
 export const updateRanks = async () => {
     let ranksData = await getRanksData();
 
-    fetch(`/update/ranks`, {
+    fetch(`https://salty-league.onrender.com/update/ranks`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

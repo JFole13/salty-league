@@ -14,10 +14,13 @@ const year1Data = fs.readFileSync('./year1Test.json');
 
 const PORT = process.env.PORT;
 const URL = process.env.URL;
-const CONNECTION = process.env.POSTGRESQL_CONNECTION;
 
 // const PORT = process.env.LOCAL_PORT;
 // const URL = process.env.LOCAL_URL;
+
+const CONNECTION = process.env.POSTGRESQL_CONNECTION;
+
+console.log(CONNECTION)
 
 const client = new Client({
     connectionString: CONNECTION,
