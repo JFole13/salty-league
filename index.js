@@ -20,17 +20,9 @@ const URL = process.env.URL;
 // const URL = process.env.LOCAL_URL;
 const POSTGRESQL_CONNECTION = process.env.POSTGRESQL_CONNECTION;
 
-// const client = new Client({
-//     connectionString: POSTGRESQL_CONNECTION
-// });
-
-// const client = new Client({
-//     user: 'postgres',
-//     host: 'localhost',
-//     database: 'saltydb',
-//     password: 'b55',
-//     port: 5432,
-// });
+const client = new Client({
+    connectionString: POSTGRESQL_CONNECTION
+});
 
 client.connect()
 .then(() => console.log('Connected to PostgreSQL'))
