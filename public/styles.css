@@ -22,12 +22,17 @@
 .activity-filter-options {
     margin-bottom: 1rem;
     background-color:rgb(33, 33, 33);
+    border-width: 1px;
+    border-style: solid;
+    border-color:  rgb(52, 52, 52);
+    border-radius: 15px;
     font-size: 1rem;
-    border: none;
+    padding: 4px;
 }
 
 .activity-filter-text {
     margin: 0 1rem 1rem 2.5rem;
+    padding: 4px 0;
 }
 
 .activity-icon {
@@ -375,6 +380,10 @@
 @media screen and (max-width: 425px) {
     .activity-container {
         margin: 1rem;
+    }
+
+    .activity-filter-text {
+        margin-left: 1rem;
     }
 
     .activity-panel {

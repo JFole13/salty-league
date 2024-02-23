@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv  from "dotenv";
 import express from 'express';
 import fs from 'fs';
-import pkg from 'pg'
+import pkg from 'pg';
 
 import { updateLoserBracketPlacements, updateRanks, updateWeekScoring, updateWinnerBracketPlacements, updateYearScoring } from './scoring.js';
 
@@ -13,16 +13,25 @@ dotenv.config()
 
 const year1Data = fs.readFileSync('./year1Test.json');
 
-const PORT = process.env.PORT;
-const URL = process.env.URL;
+// const PORT = process.env.PORT;
+// const URL = process.env.URL;
+//const POSTGRESQL_CONNECTION = process.env.POSTGRESQL_CONNECTION;
 
-// const PORT = process.env.LOCAL_PORT;
-// const URL = process.env.LOCAL_URL;
-const POSTGRESQL_CONNECTION = process.env.POSTGRESQL_CONNECTION;
+const PORT = process.env.LOCAL_PORT;
+const URL = process.env.LOCAL_URL;
+//const POSTGRESQL_CONNECTION = process.env.POSTGRESQL_CONNECTION_EXTERNAL;
 
 const client = new Client({
-    connectionString: POSTGRESQL_CONNECTION
+    user: 'postgres',
+    host: 'localhost',
+    database: 'saltydb',
+    password: 'b55',
+    port: 5432,
 });
+
+// const client = new Client({
+//     connectionString: POSTGRESQL_CONNECTION
+// });
 
 client.connect()
 .then(() => console.log('Connected to PostgreSQL'))
