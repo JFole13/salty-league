@@ -199,7 +199,7 @@ const addHighestScorerPoints = async (matchupsData, playersData) => {
         console.error('No players data available');
         return;
     }
-    
+
     const plusPoints = 5;
 
     const sortedData = matchupsData.sort((a, b) => b.points - a.points);
@@ -720,7 +720,7 @@ export const updateRanks = async () => {
     })
     .then(response => response.json())
     .then(data => {
-        //console.log(data)
+        console.log('hey')
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
