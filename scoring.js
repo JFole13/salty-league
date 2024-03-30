@@ -720,7 +720,7 @@ export const updateRanks = async () => {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('hey')
+        //console.log(data)
     })
     .catch(error => {
         console.error('Error getting matchups:', error);
