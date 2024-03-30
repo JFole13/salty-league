@@ -25,7 +25,7 @@ export const updateWeekScoring = async (week) => {
     exportData(matchupsData);
 
     // order of these correspond to how they show on the site
-    await addHighestScorerPoints(matchupsData, playersData);
+    // await addHighestScorerPoints(matchupsData, playersData);
     await addHighestPlayerPoints(matchupsData, playersData);
     await addBlowoutPoints(matchupsData, playersData);
     await addHighestPointsInLossPoints(matchupsData, playersData);
